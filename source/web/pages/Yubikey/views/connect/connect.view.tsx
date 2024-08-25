@@ -2,7 +2,7 @@
 // Module Imports
 /////////////////////////
 
-import React, { useState } from 'react';
+import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
 
 /////////////////////////
@@ -43,7 +43,7 @@ const YUBIKEY_LOGO_HEIGHT = 200;
 /////////////////////////
 
 interface IConnectProps {
-  onConnectClick: (deviceId: string) => void;
+  onConnectClick: () => void;
   onConnectError: (error: string) => void;
 }
 
@@ -52,8 +52,6 @@ interface IConnectProps {
 /////////////////////////
 
 function Connect(props: IConnectProps) {
-  const [deviceId, setDeviceId] = useState<string>('');
-
   /////////////////////////
   // Callbacks
   /////////////////////////
@@ -61,7 +59,7 @@ function Connect(props: IConnectProps) {
   const onClick = () => {
     try {
       if (props.onConnectClick) {
-        props.onConnectClick(deviceId);
+        props.onConnectClick();
       }
     } catch (exc: any) {
       if (props.onConnectError) {
@@ -98,20 +96,12 @@ function Connect(props: IConnectProps) {
           </div>
           <div className={styles.instructions}>
             <span className={styles.text}>
-              1. Connect your Yubikey device to WiFi.
+              1. Make sure the YubikeyWallet software and gpg is installed on your computer.
               <br />
-              2. Enter your Device ID below.
+              2. Connect your Yubikey via USB
               <br />
               3. Click "Connect to Yubikey" button.
             </span>
-          </div>
-          <div className={styles.deviceId}>
-            <input
-              className={styles.input}
-              value={deviceId}
-              onChange={(e) => setDeviceId(e.target.value)}
-              placeholder="Device ID"
-            />
           </div>
         </div>
         <div>

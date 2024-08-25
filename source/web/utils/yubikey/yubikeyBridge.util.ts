@@ -31,7 +31,6 @@ class YubikeyBridgeUtil {
     );
   };
 
-
   static async sendNativeMessage(message: any): Promise<any> {
     return new Promise((resolve, reject) => {
       chrome.runtime.sendNativeMessage('com.constellation.yubikey', message, (response) => {
@@ -42,28 +41,6 @@ class YubikeyBridgeUtil {
         }
       });
     });
-  }
-
-  static async requestPermissions(deviceId: string, setMessage: Function, setCode: Function) {
-    const message = {
-      command: 'requestPermissions',
-      deviceId,
-    };
-
-    // Set the message and code before sending the native message
-    setMessage('Requesting permissions...');
-    setCode(100); // Example code, adjust as needed
-
-    try {
-      const response = await this.sendNativeMessage(message);
-      setMessage('Permissions granted.');
-      setCode(200); // Example code, adjust as needed
-      return response;
-    } catch (error) {
-      setMessage(`Error: ${error}`);
-      setCode(500); // Example code, adjust as needed
-      throw error;
-    }
   }
 
   static async getAccountData() {
@@ -88,13 +65,6 @@ class YubikeyBridgeUtil {
       from,
       to,
       fee,
-    };
-    return this.sendNativeMessage(message);
-  }
-
-  static closeConnection() {
-    const message = {
-      command: 'closeConnection',
     };
     return this.sendNativeMessage(message);
   }
