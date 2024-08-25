@@ -35,8 +35,13 @@ class YubikeyBridgeUtil {
     return new Promise((resolve, reject) => {
       chrome.runtime.sendNativeMessage('com.constellation.yubikey', message, (response) => {
         if (chrome.runtime.lastError) {
+          console.log('Chrome runtime error:', chrome.runtime.lastError);
           reject(chrome.runtime.lastError.message);
+        } else if (response.error) {
+          console.log('Received host response:', response);
+          reject(response.error);
         } else {
+          console.log('Received host response:', response);
           resolve(response);
         }
       });
