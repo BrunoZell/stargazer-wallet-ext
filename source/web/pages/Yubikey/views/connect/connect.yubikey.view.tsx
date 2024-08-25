@@ -12,13 +12,11 @@ const YUBIKEY_USER_GUIDE_WIDTH = 360;
 const YUBIKEY_USER_GUIDE_HEIGHT = 130;
 
 interface IConnectProps {
-  message: string;
   error: string;
-  code: string;
   onBack: () => void;
 }
 
-function ConnectYubikeyView({ onBack, message, code, error }: IConnectProps) {
+function ConnectYubikeyView({ onBack, error }: IConnectProps) {
   const BlueButton = withStyles((theme) => ({
     root: {
       color: theme.palette.getContrastText(BUTTON_CUSTOM_COLOR_PROP),
@@ -32,25 +30,13 @@ function ConnectYubikeyView({ onBack, message, code, error }: IConnectProps) {
   return (
     <div className={styles.content}>
       <div className={styles.wrapper}>
-        {code ? (
-          <div className={styles.code}>
-            <span className={styles.text}>{code.toUpperCase()}</span>
-          </div>
-        ) : (
-          <div style={{ marginTop: '0px', marginBottom: '50px' }}>
-            <img
-              src={YubikeyUserGuide}
-              alt="yubikey_user_guide"
-              width={YUBIKEY_USER_GUIDE_WIDTH}
-              height={YUBIKEY_USER_GUIDE_HEIGHT}
-            />
-          </div>
-        )}
-
-        <div className={styles.instructions}>
-          <span className={styles.text}>
-            {message.charAt(0).toUpperCase() + message.slice(1)}.
-          </span>
+        <div style={{ marginTop: '0px', marginBottom: '50px' }}>
+          <img
+            src={YubikeyUserGuide}
+            alt="yubikey_user_guide"
+            width={YUBIKEY_USER_GUIDE_WIDTH}
+            height={YUBIKEY_USER_GUIDE_HEIGHT}
+          />
         </div>
         {error}
         <div className={styles.footer}>

@@ -29,7 +29,6 @@ interface IMessageSignViewProps {
   messageSigned: boolean;
   walletLabel: string;
   deviceId: string;
-  code: string;
   message: {
     content: string;
     metadata: {
@@ -50,7 +49,6 @@ const SignMessageView = ({
   waitingMessage,
   messageSigned,
   walletLabel,
-  code,
   message,
   deviceId,
   onSignMessagePress,
@@ -118,7 +116,6 @@ const SignMessageView = ({
           <div className={styles.progressWrapper}>
             <div className={styles.progress}>
               <CircularProgress />
-              <h1 style={{ color: 'white', margin: '0px' }}>{code}</h1>
               <span>{waitingMessage}</span>
             </div>
           </div>

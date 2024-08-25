@@ -29,12 +29,10 @@ import { convertBigNumber } from 'utils/number';
 interface ISignViewProps {
   amount: string;
   fee: string;
-  code: string;
   deviceId: string;
   fromAddress: string;
   toAddress: string;
   waiting: boolean;
-  waitingMessage: string;
   transactionSigned: boolean;
   onSignPress: () => {};
 }
@@ -50,8 +48,6 @@ const SignView = ({
   fromAddress,
   toAddress,
   waiting,
-  code,
-  waitingMessage,
   transactionSigned,
   onSignPress,
 }: ISignViewProps) => {
@@ -130,10 +126,6 @@ const SignView = ({
             <div className={styles.progress}>
               <div>
                 <CircularProgress />
-              </div>
-              <div className={styles.message}>
-                <h1 style={{ color: 'white', margin: '0px' }}>{code}</h1>
-                <span>{waitingMessage}</span>
               </div>
             </div>
           </div>

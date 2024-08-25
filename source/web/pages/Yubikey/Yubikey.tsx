@@ -112,9 +112,6 @@ const YubikeyPage = () => {
     const [waitingForYubikey, setWaitingForYubikey] = useState<boolean>(false);
     const [transactionSigned, setTransactionSigned] = useState<boolean>(false);
     const [deviceId, setDeviceId] = useState<string | string[]>('');
-    const [waitingMessage, setWaitingMessage] = useState<string>('Waiting For Yubikey');
-    const [message, setMessage] = useState<string>('');
-    const [code, setCode] = useState<string>('');
     const [error] = useState<string>('');
     const walletController = getWalletController();
 
@@ -257,9 +254,7 @@ const YubikeyPage = () => {
             return (
                 <>
                     <ConnectYubikeyView
-                        message={message}
                         error={error}
-                        code={code}
                         onBack={() => setWalletState(WALLET_STATE_ENUM.LOCKED)}
                     />
                 </>
@@ -290,7 +285,6 @@ const YubikeyPage = () => {
             return (
                 <>
                     <SignView
-                        code={code}
                         amount={amount}
                         fee={fee}
                         deviceId={deviceId as string}
@@ -299,7 +293,6 @@ const YubikeyPage = () => {
                         waiting={waitingForYubikey}
                         onSignPress={onSignPress}
                         transactionSigned={transactionSigned}
-                        waitingMessage={waitingMessage}
                     />
                 </>
             );
@@ -314,14 +307,13 @@ const YubikeyPage = () => {
             return (
                 <>
                     <MessageSigning
-                        code={code}
-                        waitingMessage={waitingMessage}
                         walletLabel={parsedData.walletLabel}
                         deviceId={deviceId}
                         message={message}
                         waiting={waitingForYubikey}
                         onSignMessagePress={onSignMessagePress}
                         messageSigned={transactionSigned}
+                        waitingMessage={'Waiting For Yubikey'}
                     />
                 </>
             );
