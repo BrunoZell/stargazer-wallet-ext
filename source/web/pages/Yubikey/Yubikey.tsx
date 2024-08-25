@@ -21,7 +21,6 @@ import { Header, AlertBar } from './components';
 /////////////////////////
 
 import ConnectView, { ConnectYubikeyView } from './views/connect';
-import FetchingProgressView from './views/fetchingProgress';
 import AccountsView from './views/accounts';
 import SignView from './views/sign';
 import ImportSuccess from './views/importSuccess';
@@ -82,13 +81,10 @@ enum ALERT_SEVERITY_STATE {
 
 enum WALLET_STATE_ENUM {
     LOCKED = 1,
-    FETCHING,
-    FETCHING_PAGE,
+    YUBIKEY_CONNECT,
     VIEW_ACCOUNTS,
-    SENDING,
-    SUCCESS,
+    IMPORT_SUCCESS,
     SIGN,
-    YUBIKEY_SIGNIN,
     MESSAGE_SIGNING,
 }
 
@@ -176,7 +172,7 @@ const YubikeyPage = () => {
 
     const onConnectClick = async () => {
         try {
-            setWalletState(WALLET_STATE_ENUM.YUBIKEY_SIGNIN);
+            setWalletState(WALLET_STATE_ENUM.YUBIKEY_CONNECT);
             await getAccountData();
         } catch (exc: any) {
             showAlert(exc.message || exc.toString());
@@ -208,7 +204,7 @@ const YubikeyPage = () => {
             deviceId as string
         );
 
-        setWalletState(WALLET_STATE_ENUM.SUCCESS);
+        setWalletState(WALLET_STATE_ENUM.IMPORT_SUCCESS);
     };
 
     const onSignMessagePress = async () => {
@@ -251,7 +247,13 @@ const YubikeyPage = () => {
     };
 
     function RenderByWalletState() {
-        if (walletState === WALLET_STATE_ENUM.YUBIKEY_SIGNIN) {
+        if (walletState === WALLET_STATE_ENUM.LOCKED) {
+            return (
+                <>
+                    <ConnectView onConnectClick={onConnectClick} onConnectError={onConnectError} />
+                </>
+            );
+        } else if (walletState === WALLET_STATE_ENUM.YUBIKEY_CONNECT) {
             return (
                 <>
                     <ConnectYubikeyView
@@ -260,18 +262,6 @@ const YubikeyPage = () => {
                         code={code}
                         onBack={() => setWalletState(WALLET_STATE_ENUM.LOCKED)}
                     />
-                </>
-            );
-        } else if (walletState === WALLET_STATE_ENUM.LOCKED) {
-            return (
-                <>
-                    <ConnectView onConnectClick={onConnectClick} onConnectError={onConnectError} />
-                </>
-            );
-        } else if (walletState === WALLET_STATE_ENUM.FETCHING) {
-            return (
-                <>
-                    <FetchingProgressView accountsLoadProgress={0} />
                 </>
             );
         } else if (walletState === WALLET_STATE_ENUM.VIEW_ACCOUNTS) {
@@ -288,7 +278,7 @@ const YubikeyPage = () => {
                     />
                 </>
             );
-        } else if (walletState === WALLET_STATE_ENUM.SUCCESS) {
+        } else if (walletState === WALLET_STATE_ENUM.IMPORT_SUCCESS) {
             return (
                 <>
                     <ImportSuccess />
