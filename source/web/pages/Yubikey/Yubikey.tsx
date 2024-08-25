@@ -187,7 +187,19 @@ const YubikeyPage = () => {
 
     const getAccountData = async () => {
         try {
-            const accountData = await YubikeyBridgeUtil.getAccountData();
+            const publicKey = await YubikeyBridgeUtil.getPublicKey();
+            console.log('publicKey', publicKey);
+
+            dag4.account.loginPublicKey(publicKey);
+            const address = dag4.account.keyTrio.publicKey;
+            console.log('address', address);
+
+            const accountData : LedgerAccount = {
+                address: address,
+                publicKey: publicKey,
+                balance: null,
+            };
+
             setAccountData(accountData);
             setWalletState(WALLET_STATE_ENUM.VIEW_ACCOUNTS);
         } catch (error: any) {

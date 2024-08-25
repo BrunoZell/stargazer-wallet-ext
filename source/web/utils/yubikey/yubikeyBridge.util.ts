@@ -43,9 +43,9 @@ class YubikeyBridgeUtil {
     });
   }
 
-  static async getAccountData() {
+  static async getPublicKey() {
     const message = {
-      command: 'getAccountData',
+      command: 'getPublicKey',
     };
     return this.sendNativeMessage(message);
   }
