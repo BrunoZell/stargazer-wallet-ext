@@ -34,6 +34,7 @@ const initialState: IVaultState = {
     local: [],
     ledger: [],
     bitfi: [],
+    yubikey: [],
   },
   publicKey: null,
   hasEncryptedVault: false,
@@ -100,6 +101,9 @@ const VaultState = createSlice({
     },
     addBitfiWallet(state: IVaultState, action) {
       state.wallets.bitfi = [...state.wallets.bitfi, action.payload];
+    },
+    addYubikeyWallet(state: IVaultState, action) {
+      state.wallets.yubikey = [...state.wallets.yubikey, action.payload];
     },
     updateWallets(
       state: IVaultState,
@@ -211,6 +215,7 @@ const VaultState = createSlice({
 export const {
   addLedgerWallet,
   addBitfiWallet,
+  addYubikeyWallet,
   updateWallets,
   rehydrate,
   setVaultInfo,

@@ -224,6 +224,12 @@ module.exports = {
       filename: 'bitfi.html',
     }),
     new HtmlWebpackPlugin({
+      template: path.join(viewsPath, 'yubikey.html'),
+      inject: 'body',
+      chunks: ['yubikey'],
+      filename: 'yubikey.html',
+    }),
+    new HtmlWebpackPlugin({
       template: path.join(viewsPath, 'options.html'),
       inject: 'body',
       chunks: ['options'],

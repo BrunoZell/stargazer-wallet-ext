@@ -115,6 +115,7 @@ export interface IVaultWalletsStoreState {
   local: KeyringWalletState[];
   ledger: KeyringWalletState[];
   bitfi: KeyringWalletState[];
+  yubikey: KeyringWalletState[];
 }
 
 export interface IWalletState {

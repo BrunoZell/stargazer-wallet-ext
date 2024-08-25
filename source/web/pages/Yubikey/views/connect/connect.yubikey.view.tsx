@@ -1,15 +1,15 @@
 import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
-import styles from './bitfiStyles.module.scss';
-import BitfiUserGuide from 'assets/images/bitfi-user-guide.png';
+import styles from './yubikeyStyles.module.scss';
+import YubikeyUserGuide from 'assets/images/yubikey-user-guide.png';
 
 const BUTTON_SIZE_PROP = 'large';
 const BUTTON_VARIANT_PROP = 'contained';
 const BUTTON_COLOR_PROP = 'primary';
 const BUTTON_CUSTOM_COLOR_PROP = '#521e8a';
-const BITFI_USER_GUIDE_WIDTH = 360;
-const BITFI_USER_GUIDE_HEIGHT = 130;
+const YUBIKEY_USER_GUIDE_WIDTH = 360;
+const YUBIKEY_USER_GUIDE_HEIGHT = 130;
 
 interface IConnectProps {
   message: string;
@@ -18,7 +18,7 @@ interface IConnectProps {
   onBack: () => void;
 }
 
-function ConnectBitfiView({ onBack, message, code, error }: IConnectProps) {
+function ConnectYubikeyView({ onBack, message, code, error }: IConnectProps) {
   const BlueButton = withStyles((theme) => ({
     root: {
       color: theme.palette.getContrastText(BUTTON_CUSTOM_COLOR_PROP),
@@ -39,10 +39,10 @@ function ConnectBitfiView({ onBack, message, code, error }: IConnectProps) {
         ) : (
           <div style={{ marginTop: '0px', marginBottom: '50px' }}>
             <img
-              src={BitfiUserGuide}
-              alt="bitfi_user_guide"
-              width={BITFI_USER_GUIDE_WIDTH}
-              height={BITFI_USER_GUIDE_HEIGHT}
+              src={YubikeyUserGuide}
+              alt="yubikey_user_guide"
+              width={YUBIKEY_USER_GUIDE_WIDTH}
+              height={YUBIKEY_USER_GUIDE_HEIGHT}
             />
           </div>
         )}
@@ -70,4 +70,4 @@ function ConnectBitfiView({ onBack, message, code, error }: IConnectProps) {
   );
 }
 
-export default ConnectBitfiView;
+export default ConnectYubikeyView;

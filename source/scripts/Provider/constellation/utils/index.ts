@@ -9,6 +9,7 @@ import { toDag } from 'utils/number';
 
 const LEDGER_URL = '/ledger.html';
 const BITFI_URL = '/bitfi.html';
+const YUBIKEY_URL = '/yubikey.html';
 export const EXTERNAL_URL = '/external.html';
 export const WINDOW_TYPES: Record<string, chrome.windows.createTypeEnum> = {
   popup: 'popup',
@@ -42,13 +43,17 @@ export const getWalletInfo = () => {
     : null;
   const isLedger = activeWallet?.type === KeyringWalletType.LedgerAccountWallet;
   const isBitfi = activeWallet?.type === KeyringWalletType.BitfiAccountWallet;
-  const isHardware = isLedger || isBitfi;
+  const isYubikey = activeWallet?.type === KeyringWalletType.YubikeyAccountWallet;
+  const isHardware = isLedger || isBitfi || isYubikey;
 
   if (isLedger) {
     windowUrl = LEDGER_URL;
     bipIndex = activeWallet?.bipIndex;
   } else if (isBitfi) {
     windowUrl = BITFI_URL;
+    deviceId = activeWallet?.accounts[0].deviceId;
+  } else if (isYubikey) {
+    windowUrl = YUBIKEY_URL;
     deviceId = activeWallet?.accounts[0].deviceId;
   }
   const windowType = isHardware ? WINDOW_TYPES.normal : WINDOW_TYPES.popup;

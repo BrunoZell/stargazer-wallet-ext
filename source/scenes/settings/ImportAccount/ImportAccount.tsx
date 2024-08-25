@@ -15,6 +15,7 @@ import FileSelect from 'components/FileSelect';
 
 // import LedgerIcon from 'assets/images/svg/ledger.svg';
 import BitfiIcon from 'assets/images/svg/bitfi.svg';
+import YubikeyIcon from 'assets/images/svg/yubikey.svg';
 import styles from './ImportAccount.scss';
 import { useAlert } from 'react-alert';
 
@@ -24,6 +25,7 @@ enum HARDWARE_WALLET {
   none = 0,
   bitfi,
   ledger,
+  yubikey,
 }
 
 const ImportAccount: FC<IImportAccountSettings> = ({
@@ -96,6 +98,8 @@ const ImportAccount: FC<IImportAccountSettings> = ({
         return window.open('/ledger.html', '_newtab');
       } else if (hardwareWallet === HARDWARE_WALLET.bitfi) {
         return window.open('/bitfi.html', '_newtab');
+      } else if (hardwareWallet === HARDWARE_WALLET.yubikey) { // Added condition for yubikey
+        return window.open('/yubikey.html', '_newtab');
       }
     } else {
       return alert.error('Error: A private key json file is not chosen');
@@ -215,6 +219,17 @@ const ImportAccount: FC<IImportAccountSettings> = ({
                         ])}
                       >
                         <img src={`/${BitfiIcon}`} alt="bitfi_icon" />
+                      </div>
+                      <div
+                        onClick={() => onHardwareTypeClick(HARDWARE_WALLET.yubikey)} // Added Yubikey option
+                        className={clsx([
+                          styles.walletModel,
+                          hardwareWallet === HARDWARE_WALLET.yubikey
+                            ? styles.walletModelSelected
+                            : null,
+                        ])}
+                      >
+                        <img src={`/${YubikeyIcon}`} alt="yubikey_icon" /> {/* Add Yubikey icon */}
                       </div>
                     </div>
                   </>

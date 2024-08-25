@@ -11,6 +11,7 @@ import {
   addCustomNetwork,
   changeCurrentEVMNetwork,
   getHasEncryptedVault,
+  addYubikeyWallet,
 } from 'state/vault';
 import IVaultState, {
   ICustomNetworkObject,
@@ -46,6 +47,8 @@ const LEDGER_WALLET_PREFIX = 'L';
 const BITFI_WALLET_PREFIX = 'B';
 const LEDGER_WALLET_LABEL = 'Ledger';
 const BITFI_WALLET_LABEL = 'Bitfi';
+const YUBIKEY_WALLET_PREFIX = 'Y';
+const YUBIKEY_WALLET_LABEL = 'Yubikey';
 const ACCOUNT_ITEMS_FIRST_INDEX = 0;
 
 class WalletController {
@@ -172,7 +175,7 @@ class WalletController {
     const state = store.getState();
     const { vault } = state;
     const { wallets } = vault;
-    const allWallets = [...wallets.local, ...wallets.ledger, ...wallets.bitfi];
+    const allWallets = [...wallets.local, ...wallets.ledger, ...wallets.bitfi, ...wallets.yubikey];
 
     for (let i = 0; i < allWallets.length; i++) {
       const { accounts } = allWallets[i];
@@ -223,23 +226,24 @@ class WalletController {
         continue;
       }
 
-      const wallet =
-        accountItem.type === KeyringWalletType.LedgerAccountWallet
-          ? wallets.ledger
-          : wallets.bitfi;
-      const prefix =
-        accountItem.type === KeyringWalletType.LedgerAccountWallet
-          ? LEDGER_WALLET_PREFIX
-          : BITFI_WALLET_PREFIX;
-      const label =
-        accountItem.type === KeyringWalletType.LedgerAccountWallet
-          ? LEDGER_WALLET_LABEL
-          : BITFI_WALLET_LABEL;
-      const addWallet =
-        accountItem.type === KeyringWalletType.LedgerAccountWallet
-          ? addLedgerWallet
-          : addBitfiWallet;
-      // Determine the next ID for either a ledger or bitfi wallet.
+      let wallet, prefix, label, addWallet;
+      if (accountItem.type === KeyringWalletType.LedgerAccountWallet) {
+        wallet = wallets.ledger;
+        prefix = LEDGER_WALLET_PREFIX;
+        label = LEDGER_WALLET_LABEL;
+        addWallet = addLedgerWallet;
+      } else if (accountItem.type === KeyringWalletType.BitfiAccountWallet) {
+        wallet = wallets.bitfi;
+        prefix = BITFI_WALLET_PREFIX;
+        label = BITFI_WALLET_LABEL;
+        addWallet = addBitfiWallet;
+      } else if (accountItem.type === KeyringWalletType.YubikeyAccountWallet) {
+        wallet = wallets.yubikey;
+        prefix = YUBIKEY_WALLET_PREFIX;
+        label = YUBIKEY_WALLET_LABEL;
+        addWallet = addYubikeyWallet;
+      }
+
       const id: number = this.getNextHardwareWaletAccountId(wallet, prefix);
 
       // Determine the name of the wallet for Ledger we need to create a recursive
@@ -276,34 +280,40 @@ class WalletController {
   async deleteWallet(wallet: KeyringWalletState): Promise<void> {
     const { vault } = store.getState();
     const { wallets } = vault;
-    const { local, bitfi, ledger } = wallets;
+    const { local, bitfi, ledger, yubikey } = wallets;
 
-    let newWalletState: IVaultWalletsStoreState = { local: [], ledger: [], bitfi: [] };
+    let newWalletState: IVaultWalletsStoreState = { local: [], ledger: [], bitfi: [], yubikey: [] };
     let newLocalState = [...local];
     let newLedgerState = [...ledger];
     let newBitfiState = [...bitfi];
+    let newYubikeyState = [...yubikey];
 
     if (
       wallet.type !== KeyringWalletType.LedgerAccountWallet &&
-      wallet.type !== KeyringWalletType.BitfiAccountWallet
+      wallet.type !== KeyringWalletType.BitfiAccountWallet &&
+      wallet.type !== KeyringWalletType.YubikeyAccountWallet
     ) {
       newLocalState = filter(newLocalState, (w) => w.id !== wallet.id);
     } else if (wallet.type === KeyringWalletType.LedgerAccountWallet) {
       newLedgerState = filter(newLedgerState, (w) => w.id !== wallet.id);
     } else if (wallet.type === KeyringWalletType.BitfiAccountWallet) {
       newBitfiState = filter(newBitfiState, (w) => w.id !== wallet.id);
+    } else if (wallet.type === KeyringWalletType.YubikeyAccountWallet) {
+      newYubikeyState = filter(newYubikeyState, (w) => w.id !== wallet.id);
     }
 
     newWalletState = {
       local: [...newLocalState],
       ledger: [...newLedgerState],
       bitfi: [...newBitfiState],
+      yubikey: [...newYubikeyState],
     };
 
     const newAllWallets = [
       ...newWalletState.local,
       ...newWalletState.ledger,
       ...newWalletState.bitfi,
+      ...newWalletState.yubikey,
     ];
 
     if (vault && vault.activeWallet && vault.activeWallet.id === wallet.id) {
@@ -316,7 +326,8 @@ class WalletController {
 
     if (
       wallet.type !== KeyringWalletType.LedgerAccountWallet &&
-      wallet.type !== KeyringWalletType.BitfiAccountWallet
+      wallet.type !== KeyringWalletType.BitfiAccountWallet &&
+      wallet.type !== KeyringWalletType.YubikeyAccountWallet
     ) {
       await this.keyringManager.removeWalletById(wallet.id);
     }
