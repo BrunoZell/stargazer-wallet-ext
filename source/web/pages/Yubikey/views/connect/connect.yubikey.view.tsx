@@ -2,7 +2,7 @@ import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import styles from './yubikeyStyles.module.scss';
-import YubikeyUserGuide from 'assets/images/yubikey-user-guide.png';
+import YubikeyUserGuide from 'assets/images/bitfi-user-guide.png';
 
 const BUTTON_SIZE_PROP = 'large';
 const BUTTON_VARIANT_PROP = 'contained';

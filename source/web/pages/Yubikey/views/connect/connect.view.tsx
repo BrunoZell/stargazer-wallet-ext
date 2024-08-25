@@ -60,10 +60,6 @@ function Connect(props: IConnectProps) {
 
   const onClick = () => {
     try {
-      if (Buffer.from(deviceId, 'hex').length !== 3) {
-        throw new Error('Invalid device ID');
-      }
-
       if (props.onConnectClick) {
         props.onConnectClick(deviceId);
       }

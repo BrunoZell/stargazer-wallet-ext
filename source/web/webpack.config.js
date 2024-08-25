@@ -65,6 +65,7 @@ module.exports = {
     external: path.join(__dirname, 'pages/External', 'index.tsx'),
     ledger: path.join(__dirname, 'pages/Ledger', 'index.tsx'),
     bitfi: path.join(__dirname, 'pages/Bitfi', 'index.tsx'),
+    yubikey: path.join(__dirname, 'pages/Yubikey', 'index.tsx'),
     options: path.join(__dirname, 'pages/Options', 'index.tsx'),
   },
 
