@@ -75,7 +75,7 @@ module.exports = {
 
   resolve: {
     plugins: [PnpWebpackPlugin],
-    extensions: ['.ts', '.tsx', '.js', '.json'],
+    extensions: ['.ts', '.tsx', '.js', '.jsx', '.json'],
     alias: {
       assets: path.resolve(sharedPath, 'assets'),
       components: path.resolve(sharedPath, 'components'),
@@ -122,6 +122,16 @@ module.exports = {
         },
         options: {
           ...JSON.parse(fs.readFileSync(path.resolve(__dirname, '.babelrc'))),
+        },
+      },
+      {
+        test: /\.(js|jsx)$/,
+        exclude: /node_modules\/(?!react-native-flash-message)/,
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: ['@babel/preset-env', '@babel/preset-react'],
+          },
         },
       },
       {
