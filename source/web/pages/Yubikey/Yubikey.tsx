@@ -51,15 +51,17 @@ const ROUTES = {
 };
 
 const YUBIKEY_ERROR_STRINGS = {
-    CANNOT_CONNECT_TO_YUBIKEYWALLET: 'Cannot connect to YubikeyWallet',
-    NO_YUBIKEY_FOUND: 'No Yubikey found',
-    NO_GPGKEY_ON_YUBIKEY: 'No GPG key on Yubikey',
-    YUBIKEY_USER_REJECTION: 'Yubikey user rejection',
+    YUBIKEYWALLET_NOT_INSTALLED: 'native messaging host not found',
+    CANNOT_CONNECT_TO_YUBIKEYWALLET: '',
+    NO_YUBIKEY_FOUND: '',
+    NO_GPGKEY_ON_YUBIKEY: '',
+    YUBIKEY_USER_REJECTION: '',
     ERROR_CODE_ZERO: '0',
 };
 
 const ALERT_MESSAGES_STRINGS = {
     DEFAULT: 'Error: Please contact support.',
+    YUBIKEYWALLET_NOT_INSTALLED: 'YubikeyWallet is not installed in your computer.',
     CANNOT_CONNECT_TO_YUBIKEYWALLET: 'Unable to connect to YubikeyWallet. Please ensure the software is installed and running.',
     NO_YUBIKEY_FOUND: 'No Yubikey device detected. Please make sure your Yubikey is properly connected.',
     NO_GPGKEY_ON_YUBIKEY: 'No GPG key found on your Yubikey. Please set up a GPG key on your device.',
@@ -146,7 +148,9 @@ const YubikeyPage = () => {
         let errorMessage = ALERT_MESSAGES_STRINGS.DEFAULT;
         let errorSeverity = ALERT_SEVERITY_STATE.ERROR;
 
-        if (error.includes(YUBIKEY_ERROR_STRINGS.CANNOT_CONNECT_TO_YUBIKEYWALLET)) {
+        if (error.includes(YUBIKEY_ERROR_STRINGS.YUBIKEYWALLET_NOT_INSTALLED)) {
+            errorMessage = ALERT_MESSAGES_STRINGS.YUBIKEYWALLET_NOT_INSTALLED;
+        } else if (error.includes(YUBIKEY_ERROR_STRINGS.CANNOT_CONNECT_TO_YUBIKEYWALLET)) {
             errorMessage = ALERT_MESSAGES_STRINGS.CANNOT_CONNECT_TO_YUBIKEYWALLET;
         } else if (error.includes(YUBIKEY_ERROR_STRINGS.NO_YUBIKEY_FOUND)) {
             errorMessage = ALERT_MESSAGES_STRINGS.NO_YUBIKEY_FOUND;
