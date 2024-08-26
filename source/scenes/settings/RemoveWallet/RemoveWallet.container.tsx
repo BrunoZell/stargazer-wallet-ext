@@ -13,7 +13,7 @@ const RemoveWalletContainer: FC<IRemoveWalletView> = ({ route, navigation }) => 
   const walletController = getWalletController();
   const { id } = route.params;
   const { wallets }: IVaultState = useSelector((state: RootState) => state.vault);
-  const allWallets = [...wallets.local, ...wallets.bitfi, ...wallets.ledger];
+  const allWallets = [...wallets.local, ...wallets.bitfi, ...wallets.ledger, ...wallets.yubikey];
   const wallet = allWallets.find((w) => w.id === id);
   const linkTo = useLinkTo();
   const [loading, setLoading] = useState(false);

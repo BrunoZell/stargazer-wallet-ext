@@ -14,6 +14,7 @@ import {
   KeyringWalletState,
   KeyringWalletType,
 } from '@stardust-collective/dag4-keyring';
+import { KeyringWalletTypeExt } from 'polyfill/KeyringWalletTypeExt';
 import findIndex from 'lodash/findIndex';
 import { IAssetInfoState } from 'state/assets/types';
 import IVaultState, {
@@ -117,7 +118,17 @@ const VaultState = createSlice({
     ) {
       const isLedger =
         action.payload.wallet.type === KeyringWalletType.LedgerAccountWallet;
-      const wallets = isLedger ? state.wallets.ledger : state.wallets.bitfi;
+      const isBitfi =
+        action.payload.wallet.type === KeyringWalletType.BitfiAccountWallet;
+      const isYubikey =
+        action.payload.wallet.type === KeyringWalletTypeExt.YubikeyAccountWallet;
+
+      const wallets =
+          isLedger ? state.wallets.ledger
+        : isBitfi ? state.wallets.bitfi
+        : isYubikey ? state.wallets.yubikey
+        : state.wallets.local;
+
       const index = findIndex(wallets, (w) => w.id === action.payload.wallet.id);
       wallets[index].label = action.payload.label;
     },

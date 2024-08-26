@@ -35,6 +35,7 @@ export const getWalletInfo = () => {
     ...vault.wallets.local,
     ...vault.wallets.ledger,
     ...vault.wallets.bitfi,
+    ...vault.wallets.yubikey,
   ];
   const activeWallet = vault?.activeWallet
     ? allWallets.find(

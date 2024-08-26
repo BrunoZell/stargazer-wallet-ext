@@ -282,8 +282,8 @@ export class AccountController {
   async buildAccountAssetInfo(walletId: string, walletLabel: string): Promise<void> {
     const state = store.getState();
     const { vault } = state;
-    const { local, ledger, bitfi } = vault.wallets;
-    const allWallets = [...local, ...ledger, ...bitfi];
+    const { local, ledger, bitfi, yubikey } = vault.wallets;
+    const allWallets = [...local, ...ledger, ...bitfi, ...yubikey];
     const walletInfo: KeyringWalletState = allWallets.find(
       (w: KeyringWalletState) => w.id === walletId || w.label === walletLabel
     );

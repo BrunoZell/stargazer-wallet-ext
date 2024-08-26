@@ -16,7 +16,8 @@ const WalletsContainer: FC<IWalletsView> = ({ navigation }) => {
   );
   const ledgerWallets = !!wallets?.ledger ? wallets.ledger : [];
   const bitfiWallets = !!wallets?.bitfi ? wallets.bitfi : [];
-  const hardwareWalletAccounts = [...ledgerWallets, ...bitfiWallets];
+  const yubikeyWallets = !!wallets?.yubikey ? wallets.yubikey : [];
+  const hardwareWalletAccounts = [...ledgerWallets, ...bitfiWallets, ...yubikeyWallets];
 
   useLayoutEffect(() => {
     const onRightIconClick = () => {
