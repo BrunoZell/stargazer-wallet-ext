@@ -4,6 +4,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { LedgerAccount } from '@stardust-collective/dag4-ledger';
+import { keyStore } from '@stardust-collective/dag4-keystore';
 import { makeStyles } from '@material-ui/core/styles';
 import { YubikeyBridgeUtil } from '../../utils/yubikeyBridge';
 import queryString from 'query-string';
@@ -194,8 +195,7 @@ const YubikeyPage = () => {
             const publicKey = await YubikeyBridgeUtil.getPublicKey();
             console.log('publicKey', publicKey);
 
-            dag4.account.loginPublicKey(publicKey);
-            const address = dag4.account.keyTrio.publicKey;
+            const address = keyStore.getDagAddressFromPublicKey(publicKey);
             console.log('address', address);
 
             const accountData : LedgerAccount = {
