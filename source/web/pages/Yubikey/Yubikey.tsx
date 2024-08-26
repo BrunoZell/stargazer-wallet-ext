@@ -67,7 +67,7 @@ const ALERT_MESSAGES_STRINGS = {
     YUBIKEYWALLET_NOT_INSTALLED: 'Yubikey Bridge is not installed in your computer.',
     YUBIKEYWALLET_FAILED: 'Failed to reach Yubikey Bridge. Please contact support.',
     YUBIKEY_BRIDGE_NOT_IMPLEMENTED: 'Yubikey Bridge is not fully implemented',
-    CANNOT_CONNECT_TO_YUBIKEYWALLET: 'Unable to connect to Yubikey Bridge. Please ensure the software is installed and running.',
+    CANNOT_CONNECT_TO_YUBIKEYWALLET: 'Unable to connect to Yubikey Bridge. Please ensure the software is installed on your computer.',
     NO_YUBIKEY_FOUND: 'No Yubikey device detected. Please make sure your Yubikey is properly connected.',
     NO_GPGKEY_ON_YUBIKEY: 'No GPG key found on your Yubikey. Please set up a GPG key on your device.',
     YUBIKEY_USER_REJECTION: 'The operation was cancelled by the user.',
