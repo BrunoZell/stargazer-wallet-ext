@@ -35,8 +35,8 @@ const BUTTON_CUSTOM_COLOR_PROP = '#521e8a';
 // Strings
 const CONNECT_TO_LEDGER_STRING = 'Connect to Yubikey';
 // Numbers
-const YUBIKEY_LOGO_WIDTH = 200;
-const YUBIKEY_LOGO_HEIGHT = 200;
+const YUBIKEY_LOGO_WIDTH = 120;
+const YUBIKEY_LOGO_HEIGHT = 120;
 
 /////////////////////////
 // Interface
@@ -86,7 +86,7 @@ function Connect(props: IConnectProps) {
     <div className={styles.content}>
       <div className={styles.wrapper}>
         <div className={styles.connect}>
-          <div className={styles.logo} style={{ marginBottom: '0px' }}>
+          <div className={styles.logo} style={{ marginBottom: '35px' }}>
             <img
               src={YubikeyLogo}
               alt="yubikey_logo"
