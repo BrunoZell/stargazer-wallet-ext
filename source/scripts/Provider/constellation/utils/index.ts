@@ -1,4 +1,5 @@
 import { KeyringNetwork, KeyringWalletType } from '@stardust-collective/dag4-keyring';
+import { KeyringWalletTypeExt } from 'polyfill/KeyringWalletTypeExt';
 import { DAG_NETWORK } from 'constants/index';
 import store from 'state/store';
 import IVaultState, { AssetType, IAssetState } from 'state/vault/types';
@@ -6,13 +7,6 @@ import { dag4 } from '@stardust-collective/dag4';
 import { decodeFromBase64, encodeToBase64 } from 'utils/encoding';
 import { WatchAssetParameters } from '../methods/wallet_watchAsset';
 import { toDag } from 'utils/number';
-
-// An extension of the KeyringWalletType enum to support YubikeyAccountWallet
-// Original enum: https://github.com/StardustCollective/dag4.js/blob/main/packages/dag4-keyring/src/kcs.ts
-// Or locally: stargazer-wallet-ext\node_modules\@stardust-collective\dag4-keyring\dist\types\kcs.d.ts
-const KeyringWalletTypeExt = {
-  YubikeyAccountWallet: 'YAW',
-};
 
 const LEDGER_URL = '/ledger.html';
 const BITFI_URL = '/bitfi.html';
@@ -44,9 +38,9 @@ export const getWalletInfo = () => {
   ];
   const activeWallet = vault?.activeWallet
     ? allWallets.find(
-        (wallet: any) =>
-          wallet.id === vault.activeWallet.id || vault.activeWallet.label === wallet.label
-      )
+      (wallet: any) =>
+        wallet.id === vault.activeWallet.id || vault.activeWallet.label === wallet.label
+    )
     : null;
   const isLedger = activeWallet?.type === KeyringWalletType.LedgerAccountWallet;
   const isBitfi = activeWallet?.type === KeyringWalletType.BitfiAccountWallet;

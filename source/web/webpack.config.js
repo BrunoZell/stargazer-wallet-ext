@@ -89,6 +89,7 @@ module.exports = {
       hooks: path.resolve(sharedPath, 'hooks'),
       utils: path.resolve(sharedPath, 'utils'),
       selectors: path.resolve(sharedPath, 'selectors'),
+      polyfill: path.resolve(sharedPath, 'polyfill'),
       'react-native$': 'react-native-web',
     },
   },

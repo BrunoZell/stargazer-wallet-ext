@@ -27,6 +27,7 @@ import {
   KeyringVaultState,
   KeyringWalletType,
 } from '@stardust-collective/dag4-keyring';
+import { KeyringWalletTypeExt } from 'polyfill/KeyringWalletTypeExt';
 import { getEncryptor } from 'utils/keyringManagerUtils';
 import { AccountItem } from 'scripts/types';
 import filter from 'lodash/filter';
@@ -41,13 +42,6 @@ import { OnboardWalletHelper } from '../helpers/onboardWalletHelper';
 import SwapController, { ISwapController } from './SwapController';
 import NFTController, { INFTController } from './NFTController';
 import { DappMessage, DappMessageEvent, MessageType } from '../messaging/types';
-
-// An extension of the KeyringWalletType enum to support YubikeyAccountWallet
-// Original enum: https://github.com/StardustCollective/dag4.js/blob/main/packages/dag4-keyring/src/kcs.ts
-// Or locally: stargazer-wallet-ext\node_modules\@stardust-collective\dag4-keyring\dist\types\kcs.d.ts
-const KeyringWalletTypeExt = {
-  YubikeyAccountWallet: 'YAW',
-};
 
 // Constants
 const LEDGER_WALLET_PREFIX = 'L';
