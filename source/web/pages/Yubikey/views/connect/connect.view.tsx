@@ -96,7 +96,7 @@ function Connect(props: IConnectProps) {
           </div>
           <div className={styles.instructions}>
             <span className={styles.text}>
-              1. Make sure the YubikeyWallet software and gpg is installed on your computer.
+              1. Make sure the Yubikey Bridge and the gpg command line tool is installed on your computer.
               <br />
               2. Connect your Yubikey via USB
               <br />
