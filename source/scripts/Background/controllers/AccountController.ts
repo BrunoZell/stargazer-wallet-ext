@@ -35,6 +35,7 @@ import {
   KeyringWalletAccountState,
   KeyringWalletType,
 } from '@stardust-collective/dag4-keyring';
+import { KeyringWalletTypeExt } from 'polyfill/KeyringWalletTypeExt';
 import { setCustomAsset } from 'state/erc20assets';
 import { DAG_EXPLORER_API_URL, DAG_NETWORK } from 'constants/index';
 import { ITransactionInfo, IETHPendingTx } from '../../types';
@@ -84,11 +85,12 @@ export class AccountController {
     let privateKey;
     let publicKey;
 
-    // Excludes bitfi and ledger accounts since we do not have access
+    // Excludes bitfi, ledger and yubikey accounts since we do not have access
     // to the private key.
     if (
       walletInfo.type !== KeyringWalletType.LedgerAccountWallet &&
-      walletInfo.type !== KeyringWalletType.BitfiAccountWallet
+      walletInfo.type !== KeyringWalletType.BitfiAccountWallet &&
+      walletInfo.type !== KeyringWalletTypeExt.YubikeyAccountWallet
     ) {
       privateKey = this.keyringManager.exportAccountPrivateKey(account.address);
     } else {
