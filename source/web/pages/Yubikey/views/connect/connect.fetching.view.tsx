@@ -14,7 +14,7 @@ interface IConnectProps {
   onBack: () => void;
 }
 
-function ConnectYubikeyView({ onBack, error }: IConnectProps) {
+function ConnectYubikeyFetchingView({ onBack, error }: IConnectProps) {
   const BlueButton = withStyles((theme) => ({
     root: {
       color: theme.palette.getContrastText(BUTTON_CUSTOM_COLOR_PROP),
@@ -51,4 +51,4 @@ function ConnectYubikeyView({ onBack, error }: IConnectProps) {
   );
 }
 
-export default ConnectYubikeyView;
+export default ConnectYubikeyFetchingView;

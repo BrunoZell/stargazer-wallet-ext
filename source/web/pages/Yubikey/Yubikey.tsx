@@ -21,7 +21,7 @@ import { Header, AlertBar } from './components';
 // View Imports
 /////////////////////////
 
-import ConnectView, { ConnectYubikeyView } from './views/connect';
+import ConnectView, { ConnectYubikeyFetchingView } from './views/connect';
 import AccountsView from './views/accounts';
 import SignView from './views/sign';
 import ImportSuccess from './views/importSuccess';
@@ -89,7 +89,7 @@ enum ALERT_SEVERITY_STATE {
 
 enum WALLET_STATE_ENUM {
     LOCKED = 1,
-    YUBIKEY_CONNECT,
+    YUBIKEY_FETCHING_ADDRESS,
     VIEW_ACCOUNTS,
     IMPORT_SUCCESS,
     SIGN,
@@ -185,7 +185,7 @@ const YubikeyPage = () => {
 
     const onConnectClick = async () => {
         try {
-            setWalletState(WALLET_STATE_ENUM.YUBIKEY_CONNECT);
+            setWalletState(WALLET_STATE_ENUM.YUBIKEY_FETCHING_ADDRESS);
             await getAccountData();
         } catch (exc: any) {
             showAlert(exc.message || exc.toString());
@@ -288,10 +288,10 @@ const YubikeyPage = () => {
                     <ConnectView onConnectClick={onConnectClick} onConnectError={onConnectError} />
                 </>
             );
-        } else if (walletState === WALLET_STATE_ENUM.YUBIKEY_CONNECT) {
+        } else if (walletState === WALLET_STATE_ENUM.YUBIKEY_FETCHING_ADDRESS) {
             return (
                 <>
-                    <ConnectYubikeyView
+                    <ConnectYubikeyFetchingView
                         error={error}
                         onBack={() => setWalletState(WALLET_STATE_ENUM.LOCKED)}
                     />
