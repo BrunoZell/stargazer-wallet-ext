@@ -195,15 +195,15 @@ const YubikeyPage = () => {
 
     const getAccountData = async () => {
         try {
-            const publicKey = await YubikeyBridgeUtil.getPublicKey();
-            console.log('publicKey', publicKey);
+            const response = await YubikeyBridgeUtil.getPublicKey();
+            console.log('publicKey', response.publicKey);
 
-            const address = keyStore.getDagAddressFromPublicKey(publicKey);
+            const address = keyStore.getDagAddressFromPublicKey(response.publicKey);
             console.log('address', address);
 
             const accountData : LedgerAccount = {
                 address: address,
-                publicKey: publicKey,
+                publicKey: response,
                 balance: null,
             };
 
