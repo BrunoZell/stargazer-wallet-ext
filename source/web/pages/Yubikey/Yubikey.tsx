@@ -196,14 +196,23 @@ const YubikeyPage = () => {
     const getAccountData = async () => {
         try {
             const response = await YubikeyBridgeUtil.getPublicKey();
-            console.log('publicKey', response.publicKey);
+            const publicKey = response.publicKey;
 
-            const address = keyStore.getDagAddressFromPublicKey(response.publicKey);
-            console.log('address', address);
+            if (response.error) {
+                throw new Error(response.error);
+            }
+            
+            if (!publicKey) {
+                throw new Error('No public key found');
+            }
+
+            console.log('Fetched public key: ', publicKey);
+            const address = keyStore.getDagAddressFromPublicKey(publicKey);
+            console.log('Generated address: ', address);
 
             const accountData : LedgerAccount = {
                 address: address,
-                publicKey: response,
+                publicKey: publicKey,
                 balance: null,
             };
 
@@ -222,6 +231,8 @@ const YubikeyPage = () => {
 
     const onImportClick = async () => {
         if (!selectedAccount) return;
+
+        console.log('selectedAccount', selectedAccount);
 
         await walletController.importHardwareWalletAccounts(
             [selectedAccount] as any,
