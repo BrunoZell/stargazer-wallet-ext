@@ -33,16 +33,16 @@ class YubikeyBridgeUtil {
 
   static async sendNativeMessage(message: any): Promise<any> {
     return new Promise((resolve, reject) => {
-      console.log('Sending message:', message);
+      console.log('Sending message to Yubikey Bridge:', message);
       chrome.runtime.sendNativeMessage('com.constellation.yubikey', message, (response) => {
         if (chrome.runtime.lastError) {
           console.log('Chrome runtime error:', chrome.runtime.lastError);
           reject(chrome.runtime.lastError.message);
         } else if (response.error) {
-          console.log('Received host response:', response);
-          reject(response.error);
+          console.log('Received Yubikey Bridge response:', response);
+          reject('Yubikey Bridge error: ' + response.error);
         } else {
-          console.log('Received host response:', response);
+          console.log('Received Yubikey Bridge response:', response);
           resolve(response);
         }
       });

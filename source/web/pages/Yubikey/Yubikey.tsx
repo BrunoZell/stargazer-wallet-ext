@@ -51,8 +51,9 @@ const ROUTES = {
 };
 
 const YUBIKEY_ERROR_STRINGS = {
-    YUBIKEYWALLET_NOT_INSTALLED: 'native messaging host not found',
-    YUBIKEYWALLET_FAILED: 'Native host has exited',
+    YUBIKEY_BRIDGE_NOT_INSTALLED: 'native messaging host not found',
+    YUBIKEY_BRIDGE_FAILED: 'Native host has exited',
+    YUBIKEY_BRIDGE_NOT_IMPLEMENTED: 'Yubikey Bridge error: Not implemented',
     CANNOT_CONNECT_TO_YUBIKEYWALLET: '',
     NO_YUBIKEY_FOUND: '',
     NO_GPGKEY_ON_YUBIKEY: '',
@@ -64,6 +65,7 @@ const ALERT_MESSAGES_STRINGS = {
     DEFAULT: 'Error: Please contact support.',
     YUBIKEYWALLET_NOT_INSTALLED: 'YubikeyWallet is not installed in your computer.',
     YUBIKEYWALLET_FAILED: 'Failed to reach YubikeyWallet. Please contact support.',
+    YUBIKEY_BRIDGE_NOT_IMPLEMENTED: 'Yubikey bridge is not fully implemented',
     CANNOT_CONNECT_TO_YUBIKEYWALLET: 'Unable to connect to YubikeyWallet. Please ensure the software is installed and running.',
     NO_YUBIKEY_FOUND: 'No Yubikey device detected. Please make sure your Yubikey is properly connected.',
     NO_GPGKEY_ON_YUBIKEY: 'No GPG key found on your Yubikey. Please set up a GPG key on your device.',
@@ -150,9 +152,11 @@ const YubikeyPage = () => {
         let errorMessage = ALERT_MESSAGES_STRINGS.DEFAULT;
         let errorSeverity = ALERT_SEVERITY_STATE.ERROR;
 
-        if (error.includes(YUBIKEY_ERROR_STRINGS.YUBIKEYWALLET_NOT_INSTALLED)) {
+        if (error.includes(YUBIKEY_ERROR_STRINGS.YUBIKEY_BRIDGE_NOT_INSTALLED)) {
             errorMessage = ALERT_MESSAGES_STRINGS.YUBIKEYWALLET_NOT_INSTALLED;
-        } else if (error.includes(YUBIKEY_ERROR_STRINGS.YUBIKEYWALLET_FAILED)) {
+        } else if (error.includes(YUBIKEY_ERROR_STRINGS.YUBIKEY_BRIDGE_NOT_IMPLEMENTED)) {
+            errorMessage = ALERT_MESSAGES_STRINGS.YUBIKEY_BRIDGE_NOT_IMPLEMENTED;
+        } else if (error.includes(YUBIKEY_ERROR_STRINGS.YUBIKEY_BRIDGE_FAILED)) {
             errorMessage = ALERT_MESSAGES_STRINGS.YUBIKEYWALLET_FAILED;
         } else if (error.includes(YUBIKEY_ERROR_STRINGS.CANNOT_CONNECT_TO_YUBIKEYWALLET)) {
             errorMessage = ALERT_MESSAGES_STRINGS.CANNOT_CONNECT_TO_YUBIKEYWALLET;
