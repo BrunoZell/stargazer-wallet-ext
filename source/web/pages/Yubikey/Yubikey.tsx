@@ -40,7 +40,9 @@ import { dag4 } from '@stardust-collective/dag4';
 /////////////////////////
 
 import { getWalletController } from 'utils/controllersUtils';
-
+import { AccountItem } from 'scripts/types';
+import { KeyringWalletType } from '@stardust-collective/dag4-keyring';
+ 
 /////////////////////////
 // Constants
 /////////////////////////
@@ -229,13 +231,26 @@ const YubikeyPage = () => {
         setOpenAlert(false);
     };
 
+    const onCheckboxChange = (account: LedgerAccount, checked: boolean, key: number) => {
+        // Handle checkbox change logic here
+        console.log(`Checkbox for account ${account.address} at index ${key} changed to ${checked}`);
+    };
+
     const onImportClick = async () => {
         if (!selectedAccount) return;
 
         console.log('selectedAccount', selectedAccount);
 
+        const accountsToImport: AccountItem[] = [{
+            id: null,
+            bipIndex: null,
+            type: KeyringWalletType.LedgerAccountWallet,
+            address: selectedAccount.address,
+            publicKey: selectedAccount.publicKey,
+        }];
+
         await walletController.importHardwareWalletAccounts(
-            [selectedAccount] as any,
+            accountsToImport,
             deviceId as string
         );
 
@@ -274,11 +289,6 @@ const YubikeyPage = () => {
         } catch (error: any) {
             showAlert(error.message || error.toString());
         }
-    };
-
-    const onCheckboxChange = (account: LedgerAccount, checked: boolean, key: number) => {
-        // Handle checkbox change logic here
-        console.log(`Checkbox for account ${account.address} at index ${key} changed to ${checked}`);
     };
 
     function RenderByWalletState() {
