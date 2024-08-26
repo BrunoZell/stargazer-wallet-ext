@@ -72,8 +72,7 @@ const SignView = ({
     <>
       <div className={styles.wrapper}>
         <section className={styles.subheading}>
-          Yubikey - Sign Transaction <br />
-          Device ID: {deviceId.toUpperCase()}
+          Yubikey - Sign Transaction
         </section>
         <section className={styles.txAmount}>
           <div className={styles.iconWrapper}>
@@ -114,7 +113,7 @@ const SignView = ({
           </div>
         </section>
         <section className={styles.instruction}>
-          <span>Please connect your Yubikey device to WiFi to sign the transaction.</span>
+          <span>Please connect your Yubikey device to sign the transaction.</span>
         </section>
         <div className={styles.actions}>
           <Button type="submit" variant={styles.button} onClick={onSignPress}>
