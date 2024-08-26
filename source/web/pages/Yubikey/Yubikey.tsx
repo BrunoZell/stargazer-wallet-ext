@@ -5,7 +5,7 @@
 import React, { useState, useEffect } from 'react';
 import { LedgerAccount } from '@stardust-collective/dag4-ledger';
 import { makeStyles } from '@material-ui/core/styles';
-import YubikeyBridgeUtil from '../../utils/yubikey/yubikeyBridge.util';
+import { YubikeyBridgeUtil } from '../../utils/yubikeyBridge';
 import queryString from 'query-string';
 import _ from 'lodash';
 
