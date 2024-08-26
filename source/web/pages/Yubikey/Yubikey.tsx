@@ -42,7 +42,14 @@ import { dag4 } from '@stardust-collective/dag4';
 import { getWalletController } from 'utils/controllersUtils';
 import { AccountItem } from 'scripts/types';
 import { KeyringWalletType } from '@stardust-collective/dag4-keyring';
- 
+
+// An extension of the KeyringWalletType enum to support YubikeyAccountWallet
+// Original enum: https://github.com/StardustCollective/dag4.js/blob/main/packages/dag4-keyring/src/kcs.ts
+// Or locally: stargazer-wallet-ext\node_modules\@stardust-collective\dag4-keyring\dist\types\kcs.d.ts
+const KeyringWalletTypeExt = {
+    YubikeyAccountWallet: 'YAW',
+};
+
 /////////////////////////
 // Constants
 /////////////////////////
@@ -244,7 +251,7 @@ const YubikeyPage = () => {
         const accountsToImport: AccountItem[] = [{
             id: null,
             bipIndex: null,
-            type: KeyringWalletType.LedgerAccountWallet,
+            type: KeyringWalletTypeExt.YubikeyAccountWallet as any,
             address: selectedAccount.address,
             publicKey: selectedAccount.publicKey,
         }];
