@@ -8,6 +8,7 @@ import { useHistory } from 'react-router-dom';
 import { useLinkTo } from '@react-navigation/native';
 import { useSelector } from 'react-redux';
 import { KeyringWalletType } from '@stardust-collective/dag4-keyring';
+import { KeyringWalletTypeExt } from 'polyfill/KeyringWalletTypeExt';
 
 ///////////////////////////
 // Navigation
@@ -74,6 +75,7 @@ import { DEFAULT_LANGUAGE } from 'constants/index';
 
 const BITFI_PAGE = 'bitfi';
 const LEDGER_PAGE = 'ledger';
+const YUBIKEY_PAGE = 'yubikey';
 
 ///////////////////////////
 // Container
@@ -259,12 +261,13 @@ const ConfirmContainer = () => {
         }
       } else if (
         activeWallet.type === KeyringWalletType.LedgerAccountWallet ||
-        activeWallet.type === KeyringWalletType.BitfiAccountWallet
+        activeWallet.type === KeyringWalletType.BitfiAccountWallet ||
+        activeWallet.type === KeyringWalletTypeExt.YubikeyAccountWallet
       ) {
         const page =
-          activeWallet.type === KeyringWalletType.LedgerAccountWallet
-            ? LEDGER_PAGE
-            : BITFI_PAGE;
+              activeWallet.type === KeyringWalletType.LedgerAccountWallet ? LEDGER_PAGE
+            : activeWallet.type === KeyringWalletType.BitfiAccountWallet ? BITFI_PAGE
+            : YUBIKEY_PAGE;
 
         const params = new URLSearchParams();
         params.set('route', 'signTransaction');
