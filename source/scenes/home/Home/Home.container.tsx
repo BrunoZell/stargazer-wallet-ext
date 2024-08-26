@@ -58,7 +58,8 @@ const HomeContainer: FC<IHome> = ({ navigation, route }) => {
     activeWallet?.assets[0]?.type === AssetType.Constellation;
   const ledgerWallets = !!wallets?.ledger ? wallets.ledger : [];
   const bitfiWallets = !!wallets?.bitfi ? wallets.bitfi : [];
-  const hardwareWallets = [...ledgerWallets, ...bitfiWallets];
+  const yubikeyWallets = !!wallets?.yubikey ? wallets.yubikey : [];
+  const hardwareWallets = [...ledgerWallets, ...bitfiWallets, ...yubikeyWallets];
   const multiChainWallets = wallets.local.filter(
     (w) => w.type === KeyringWalletType.MultiChainWallet
   );
