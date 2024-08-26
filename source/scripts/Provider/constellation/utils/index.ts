@@ -7,6 +7,13 @@ import { decodeFromBase64, encodeToBase64 } from 'utils/encoding';
 import { WatchAssetParameters } from '../methods/wallet_watchAsset';
 import { toDag } from 'utils/number';
 
+// An extension of the KeyringWalletType enum to support YubikeyAccountWallet
+// Original enum: https://github.com/StardustCollective/dag4.js/blob/main/packages/dag4-keyring/src/kcs.ts
+// Or locally: stargazer-wallet-ext\node_modules\@stardust-collective\dag4-keyring\dist\types\kcs.d.ts
+const KeyringWalletTypeExt = {
+  YubikeyAccountWallet: 'YAW',
+};
+
 const LEDGER_URL = '/ledger.html';
 const BITFI_URL = '/bitfi.html';
 const YUBIKEY_URL = '/yubikey.html';
@@ -43,7 +50,7 @@ export const getWalletInfo = () => {
     : null;
   const isLedger = activeWallet?.type === KeyringWalletType.LedgerAccountWallet;
   const isBitfi = activeWallet?.type === KeyringWalletType.BitfiAccountWallet;
-  const isYubikey = activeWallet?.type === KeyringWalletType.YubikeyAccountWallet;
+  const isYubikey = activeWallet?.type === KeyringWalletTypeExt.YubikeyAccountWallet;
   const isHardware = isLedger || isBitfi || isYubikey;
 
   if (isLedger) {

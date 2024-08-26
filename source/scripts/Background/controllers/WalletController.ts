@@ -42,6 +42,13 @@ import SwapController, { ISwapController } from './SwapController';
 import NFTController, { INFTController } from './NFTController';
 import { DappMessage, DappMessageEvent, MessageType } from '../messaging/types';
 
+// An extension of the KeyringWalletType enum to support YubikeyAccountWallet
+// Original enum: https://github.com/StardustCollective/dag4.js/blob/main/packages/dag4-keyring/src/kcs.ts
+// Or locally: stargazer-wallet-ext\node_modules\@stardust-collective\dag4-keyring\dist\types\kcs.d.ts
+const KeyringWalletTypeExt = {
+  YubikeyAccountWallet: 'YAW',
+};
+
 // Constants
 const LEDGER_WALLET_PREFIX = 'L';
 const BITFI_WALLET_PREFIX = 'B';
@@ -237,7 +244,7 @@ class WalletController {
         prefix = BITFI_WALLET_PREFIX;
         label = BITFI_WALLET_LABEL;
         addWallet = addBitfiWallet;
-      } else if (accountItem.type === KeyringWalletType.YubikeyAccountWallet) {
+      } else if (accountItem.type === KeyringWalletTypeExt.YubikeyAccountWallet) {
         wallet = wallets.yubikey;
         prefix = YUBIKEY_WALLET_PREFIX;
         label = YUBIKEY_WALLET_LABEL;
@@ -291,14 +298,14 @@ class WalletController {
     if (
       wallet.type !== KeyringWalletType.LedgerAccountWallet &&
       wallet.type !== KeyringWalletType.BitfiAccountWallet &&
-      wallet.type !== KeyringWalletType.YubikeyAccountWallet
+      wallet.type !== KeyringWalletTypeExt.YubikeyAccountWallet
     ) {
       newLocalState = filter(newLocalState, (w) => w.id !== wallet.id);
     } else if (wallet.type === KeyringWalletType.LedgerAccountWallet) {
       newLedgerState = filter(newLedgerState, (w) => w.id !== wallet.id);
     } else if (wallet.type === KeyringWalletType.BitfiAccountWallet) {
       newBitfiState = filter(newBitfiState, (w) => w.id !== wallet.id);
-    } else if (wallet.type === KeyringWalletType.YubikeyAccountWallet) {
+    } else if (wallet.type === KeyringWalletTypeExt.YubikeyAccountWallet) {
       newYubikeyState = filter(newYubikeyState, (w) => w.id !== wallet.id);
     }
 
@@ -327,7 +334,7 @@ class WalletController {
     if (
       wallet.type !== KeyringWalletType.LedgerAccountWallet &&
       wallet.type !== KeyringWalletType.BitfiAccountWallet &&
-      wallet.type !== KeyringWalletType.YubikeyAccountWallet
+      wallet.type !== KeyringWalletTypeExt.YubikeyAccountWallet
     ) {
       await this.keyringManager.removeWalletById(wallet.id);
     }
