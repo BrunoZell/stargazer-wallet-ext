@@ -59,6 +59,7 @@ const YUBIKEY_ERROR_STRINGS = {
     YUBIKEY_BRIDGE_FAILED: 'Native host has exited',
     YUBIKEY_BRIDGE_NOT_IMPLEMENTED: 'Yubikey Bridge error: Not implemented',
     YUBIKEY_NO_SIGNATURE_KEY: 'No signature key on Yubikey',
+    YUBIKEY_SIGNATURE_KEY_NOT_SECP256K1: 'key is not of type secp256k1',
     CANNOT_CONNECT_TO_YUBIKEYWALLET: '',
     NO_YUBIKEY_FOUND: '',
     NO_GPGKEY_ON_YUBIKEY: '',
@@ -162,6 +163,8 @@ const YubikeyPage = () => {
         } else if (error.includes(YUBIKEY_ERROR_STRINGS.YUBIKEY_BRIDGE_NOT_IMPLEMENTED)) {
             errorMessage = ALERT_MESSAGES_STRINGS.YUBIKEY_BRIDGE_NOT_IMPLEMENTED;
         } else if (error.includes(YUBIKEY_ERROR_STRINGS.YUBIKEY_NO_SIGNATURE_KEY)) {
+            errorMessage = error;
+        } else if (error.includes(YUBIKEY_ERROR_STRINGS.YUBIKEY_SIGNATURE_KEY_NOT_SECP256K1)) {
             errorMessage = error;
         } else if (error.includes(YUBIKEY_ERROR_STRINGS.YUBIKEY_BRIDGE_FAILED)) {
             errorMessage = ALERT_MESSAGES_STRINGS.YUBIKEYWALLET_FAILED;
