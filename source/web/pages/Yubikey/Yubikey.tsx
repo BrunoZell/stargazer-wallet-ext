@@ -202,7 +202,7 @@ const YubikeyPage = () => {
 
     const getAccountData = async () => {
         try {
-            const response = await YubikeyBridgeUtil.getPublicKey();
+            const response = await YubikeyBridgeUtil.getPublicKeyFromYubikey();
             const publicKey = response.publicKey;
 
             if (response.error) {
@@ -280,17 +280,21 @@ const YubikeyPage = () => {
                 publicKey: string;
                 from: string;
                 to: string;
+                fee: string;
             }>(location.href);
 
-        const { amount, publicKey, from, to } = data;
+        const { amount, publicKey, from, to, fee } = data;
 
         try {
             setWaitingForYubikey(true);
-            const signedTX = await YubikeyBridgeUtil.buildTransaction(publicKey, from, to, Number(amount), '0');
-            const hash = await dag4.account.networkInstance.postTransaction(signedTX);
-            console.log('tx hash sent: ', hash);
 
-            if (hash) {
+            const { hash, signedTransaction } = await YubikeyBridgeUtil.generateSignedTransactionWithHashV2(publicKey, from, to, Number(amount), Number(fee));
+
+            console.log('tx hash generated: ', hash);
+            const hashSent = await dag4.account.networkInstance.postTransaction(signedTransaction);
+            console.log('tx hash sent: ', hashSent);
+
+            if (hashSent) {
                 StargazerWSMessageBroker.sendResponseResult(hash, requestMessage);
             }
 
@@ -320,7 +324,7 @@ const YubikeyPage = () => {
 
         try {
             setWaitingForYubikey(true);
-            const signature = await YubikeyBridgeUtil.signMessage(message);
+            const signature = await YubikeyBridgeUtil.signHashOnYubikey(message);
             console.log('signature', signature);
 
             StargazerWSMessageBroker.sendResponseResult(signature, requestMessage);
@@ -371,8 +375,6 @@ const YubikeyPage = () => {
             );
         } else if (walletState === WALLET_STATE_ENUM.SIGN) {
             const { amount, fee, from, to } = queryString.parse(location.search) as any;
-
-            console.log(`trying to sign ${amount} amnt, ${fee} fee, ${from} from, ${to} to`);
 
             return (
                 <>

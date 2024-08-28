@@ -1,6 +1,8 @@
 import { dag4 } from '@stardust-collective/dag4';
 import { DAG_NETWORK } from 'constants/index';
 import store from 'state/store';
+import { txEncode } from '@stardust-collective/dag4-keystore/src/tx-encode';
+import { PostTransactionV2 } from "@stardust-collective/dag4-keystore/src/transaction-v2";
 
 class YubikeyBridgeUtil {
 
@@ -49,30 +51,54 @@ class YubikeyBridgeUtil {
     });
   }
 
-  static async getPublicKey() {
-    const message = {
+  static async getPublicKeyFromYubikey() {
+    const ipcMessage = {
       command: 'getPublicKey',
     };
-    return this.sendNativeMessage(message);
+    return this.sendNativeMessage(ipcMessage);
   }
 
-  static async signMessage(message: string) {
-    const jsonMessage = {
-      command: 'signMessage',
-      message,
+  static async signHashOnYubikey(hash: string) {
+    const ipcMessage = {
+      command: 'signHash',
+      hash,
     };
-    return this.sendNativeMessage(jsonMessage);
+
+    const response = await this.sendNativeMessage(ipcMessage);
+
+    return response.signature;
   }
 
-  static async buildTransaction(amount: string, from: string, to: string, fee: string) {
-    const message = {
-      command: 'buildTransaction',
-      amount,
-      from,
-      to,
-      fee,
+  // Copied from node_modules\@stardust-collective\dag4-keystore\src\key-store.ts
+  static async generateSignedTransactionWithHashV2(fromPublicKey: string, fromAddress: string, toAddress: string, amount: number, fee = 0) {
+    if (!fromPublicKey) {
+      throw new Error('No public key set');
+    }
+
+    const lastRef = await dag4.network.getAddressLastAcceptedTransactionRef(fromAddress);
+    const { tx, hash } = dag4.keyStore.prepareTx(amount, toAddress, fromAddress, lastRef, fee, '2.0');
+
+    const signature = await this.signHashOnYubikey(hash);
+
+    const uncompressedPublicKey = fromPublicKey.length === 128 ? '04' + fromPublicKey : fromPublicKey;
+
+    const success = dag4.keyStore.verify(uncompressedPublicKey, hash, signature);
+
+    if (!success) {
+      throw new Error('Sign-Verify failed');
+    }
+
+    const signatureElt: any = {};
+    signatureElt.id = uncompressedPublicKey.substring(2); //Remove 04 prefix
+    signatureElt.signature = signature;
+
+    const transaction = txEncode.getV2TxFromPostTransaction(tx as PostTransactionV2);
+    transaction.addSignature(signatureElt);
+
+    return {
+      hash,
+      signedTransaction: transaction.getPostTransaction() as PostTransactionV2
     };
-    return this.sendNativeMessage(message);
   }
 }
 
