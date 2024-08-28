@@ -1,7 +1,7 @@
 import { dag4 } from '@stardust-collective/dag4';
 import { DAG_NETWORK } from 'constants/index';
 import store from 'state/store';
-import { TransactionV2, PostTransactionV2 } from "@stardust-collective/dag4-keystore/src/transaction-v2";
+import { TransactionV2, PostTransactionV2 } from "@stardust-collective/dag4-keystore";
 
 class YubikeyBridgeUtil {
 
