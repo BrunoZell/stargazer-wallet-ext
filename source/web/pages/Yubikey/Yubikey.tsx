@@ -267,38 +267,6 @@ const YubikeyPage = () => {
         setWalletState(WALLET_STATE_ENUM.IMPORT_SUCCESS);
     };
 
-    const onSignMessagePress = async () => {
-        // const { data } = queryString.parse(location.search) as any;
-        // const jsonData = JSON.parse(data);
-        // const message = jsonData.signatureRequestEncoded;
-
-        const { data, message: requestMessage } =
-            StargazerExternalPopups.decodeRequestMessageLocationParams<{
-                signatureRequestEncoded: string;
-                asset: string;
-                provider: string;
-                chainLabel: string;
-                walletLabel: string;
-                bipIndex: string;
-            }>(location.href);
-
-        const message = data.signatureRequestEncoded;
-
-        try {
-            setWaitingForYubikey(true);
-            const signature = await YubikeyBridgeUtil.signMessage(message);
-            console.log('signature', signature);
-
-            StargazerWSMessageBroker.sendResponseResult(signature, requestMessage);
-
-            setWaitingForYubikey(false);
-            setTransactionSigned(true);
-        } catch (error: any) {
-            showAlert(error.message || error.toString());
-            setWaitingForYubikey(false);
-        }
-    };
-
     const onCancelClick = () => {
         setWalletState(WALLET_STATE_ENUM.LOCKED);
     };
@@ -330,6 +298,38 @@ const YubikeyPage = () => {
             setTransactionSigned(true);
         } catch (error: any) {
             showAlert(error.message || error.toString());
+        }
+    };
+
+    const onSignMessagePress = async () => {
+        // const { data } = queryString.parse(location.search) as any;
+        // const jsonData = JSON.parse(data);
+        // const message = jsonData.signatureRequestEncoded;
+
+        const { data, message: requestMessage } =
+            StargazerExternalPopups.decodeRequestMessageLocationParams<{
+                signatureRequestEncoded: string;
+                asset: string;
+                provider: string;
+                chainLabel: string;
+                walletLabel: string;
+                bipIndex: string;
+            }>(location.href);
+
+        const message = data.signatureRequestEncoded;
+
+        try {
+            setWaitingForYubikey(true);
+            const signature = await YubikeyBridgeUtil.signMessage(message);
+            console.log('signature', signature);
+
+            StargazerWSMessageBroker.sendResponseResult(signature, requestMessage);
+
+            setWaitingForYubikey(false);
+            setTransactionSigned(true);
+        } catch (error: any) {
+            showAlert(error.message || error.toString());
+            setWaitingForYubikey(false);
         }
     };
 
