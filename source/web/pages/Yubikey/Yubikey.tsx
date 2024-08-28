@@ -34,6 +34,7 @@ import MessageSigning from './views/messageSigning';
 import 'assets/styles/global.scss';
 import { Color } from '@material-ui/lab/Alert';
 import { dag4 } from '@stardust-collective/dag4';
+import { StargazerExternalPopups, StargazerWSMessageBroker } from 'scripts/Background/messaging';
 
 /////////////////////////
 // Types
@@ -207,7 +208,7 @@ const YubikeyPage = () => {
             if (response.error) {
                 throw new Error(response.error);
             }
-            
+
             if (!publicKey) {
                 throw new Error('No public key found');
             }
@@ -216,7 +217,12 @@ const YubikeyPage = () => {
             const address = keyStore.getDagAddressFromPublicKey(publicKey);
             console.log('Generated address: ', address);
 
-            const accountData : LedgerAccount = {
+            // const privKey = dag4.keyStore.generatePrivateKey();
+            // const pubKey = dag4.keyStore.getPublicKeyFromPrivate(privKey);
+            // console.log('Random private key: ', privKey);
+            // console.log('Random public key: ', pubKey);
+
+            const accountData: LedgerAccount = {
                 address: address,
                 publicKey: publicKey,
                 balance: null,
@@ -262,16 +268,31 @@ const YubikeyPage = () => {
     };
 
     const onSignMessagePress = async () => {
-        const { data } = queryString.parse(location.search) as any;
+        // const { data } = queryString.parse(location.search) as any;
+        // const jsonData = JSON.parse(data);
+        // const message = jsonData.signatureRequestEncoded;
 
-        const jsonData = JSON.parse(data);
-        const message = jsonData.signatureRequestEncoded;
+        const { data, message: requestMessage } =
+            StargazerExternalPopups.decodeRequestMessageLocationParams<{
+                signatureRequestEncoded: string;
+                asset: string;
+                provider: string;
+                chainLabel: string;
+                walletLabel: string;
+                bipIndex: string;
+            }>(location.href);
+
+        const message = data.signatureRequestEncoded;
 
         try {
             setWaitingForYubikey(true);
             const signature = await YubikeyBridgeUtil.signMessage(message);
             console.log('signature', signature);
-            window.close();
+
+            StargazerWSMessageBroker.sendResponseResult(signature, requestMessage);
+
+            setWaitingForYubikey(false);
+            setTransactionSigned(true);
         } catch (error: any) {
             showAlert(error.message || error.toString());
             setWaitingForYubikey(false);
@@ -283,12 +304,29 @@ const YubikeyPage = () => {
     };
 
     const onSignPress = async () => {
-        const { amount, from, to, fee } = queryString.parse(location.search) as any;
+        // const { amount, from, to, fee } = queryString.parse(location.search) as any;
+
+        const { data, message: requestMessage } =
+            StargazerExternalPopups.decodeRequestMessageLocationParams<{
+                amount: string;
+                publicKey: string;
+                from: string;
+                to: string;
+            }>(location.href);
+
+        const { amount, publicKey, from, to } = data;
 
         try {
-            const signedTX = await YubikeyBridgeUtil.buildTransaction(amount, from, to, fee);
+            setWaitingForYubikey(true);
+            const signedTX = await YubikeyBridgeUtil.buildTransaction(publicKey, from, to, Number(amount), '0');
             const hash = await dag4.account.networkInstance.postTransaction(signedTX);
-            console.log('tx hash', hash);
+            console.log('tx hash sent: ', hash);
+
+            if (hash) {
+                StargazerWSMessageBroker.sendResponseResult(hash, requestMessage);
+            }
+
+            setWaitingForYubikey(false);
             setTransactionSigned(true);
         } catch (error: any) {
             showAlert(error.message || error.toString());
@@ -333,6 +371,8 @@ const YubikeyPage = () => {
             );
         } else if (walletState === WALLET_STATE_ENUM.SIGN) {
             const { amount, fee, from, to } = queryString.parse(location.search) as any;
+
+            console.log(`trying to sign ${amount} amnt, ${fee} fee, ${from} from, ${to} to`);
 
             return (
                 <>
