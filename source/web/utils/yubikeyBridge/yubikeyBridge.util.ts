@@ -1,8 +1,7 @@
 import { dag4 } from '@stardust-collective/dag4';
 import { DAG_NETWORK } from 'constants/index';
 import store from 'state/store';
-import { txEncode } from '@stardust-collective/dag4-keystore/src/tx-encode';
-import { PostTransactionV2 } from "@stardust-collective/dag4-keystore/src/transaction-v2";
+import { TransactionV2, PostTransactionV2 } from "@stardust-collective/dag4-keystore/src/transaction-v2";
 
 class YubikeyBridgeUtil {
 
@@ -92,7 +91,7 @@ class YubikeyBridgeUtil {
     signatureElt.id = uncompressedPublicKey.substring(2); //Remove 04 prefix
     signatureElt.signature = signature;
 
-    const transaction = txEncode.getV2TxFromPostTransaction(tx as PostTransactionV2);
+    const transaction = TransactionV2.fromPostTransaction(tx as PostTransactionV2);
     transaction.addSignature(signatureElt);
 
     return {
