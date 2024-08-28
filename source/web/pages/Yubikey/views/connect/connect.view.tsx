@@ -96,7 +96,7 @@ function Connect(props: IConnectProps) {
           </div>
           <div className={styles.instructions}>
             <span className={styles.text}>
-              1. Make sure the Yubikey Bridge and the gpg command line tool is installed on your computer.
+              1. Ensure the <a href="https://github.com/BrunoZell/stargazer-yubikey-wallet">Yubikey Bridge</a> and <a href="https://gnupg.org/download/">gpg</a> is installed on your computer.
               <br />
               2. Connect your Yubikey via USB
               <br />
