@@ -71,18 +71,28 @@ const selectBitfiWallets = createSelector(
 );
 
 /**
- * Returns all wallets.
+ * Returns Yubikey wallets.
  */
 
+const selectYubikeyWallets = createSelector(
+  getWallets,
+  (wallets: IVaultWalletsStoreState) => wallets.yubikey
+);
+
+/**
+ * Returns all wallets.
+ */
 const selectAllWallets = createSelector(
   selectLocalWallets,
   selectLedgerWallets,
   selectBitfiWallets,
-  (localWallets, ledgerWallets, bitfiWallets) => {
+  selectYubikeyWallets,
+  (localWallets, ledgerWallets, bitfiWallets, yubikeyWallets) => {
     const localWalletsArray = !!localWallets ? localWallets : [];
     const ledgerWalletsArray = !!ledgerWallets ? ledgerWallets : [];
     const bitfiWalletsArray = !!bitfiWallets ? bitfiWallets : [];
-    return [...localWalletsArray, ...ledgerWalletsArray, ...bitfiWalletsArray];
+    const yubikeyWalletsArray = !!yubikeyWallets ? yubikeyWallets : [];
+    return [...localWalletsArray, ...ledgerWalletsArray, ...bitfiWalletsArray, ...yubikeyWalletsArray];
   }
 );
 
