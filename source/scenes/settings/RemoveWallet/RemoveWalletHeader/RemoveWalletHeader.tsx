@@ -7,6 +7,7 @@ import { KeyringAssetType, KeyringWalletType } from '@stardust-collective/dag4-k
 import { ETHEREUM_LOGO, CONSTELLATION_LOGO } from 'constants/index';
 import IRemoveWalletSettings from './types';
 import styles from './RemoveWalletHeader.scss';
+import { KeyringWalletTypeExt } from 'polyfill/KeyringWalletTypeExt';
 
 const ICON_SIZE = 64;
 
@@ -15,6 +16,7 @@ const RemoveWalletHeader: FC<IRemoveWalletSettings> = ({ wallet, title, subtitle
   const isHardware = [
     KeyringWalletType.BitfiAccountWallet,
     KeyringWalletType.LedgerAccountWallet,
+    KeyringWalletTypeExt.YubikeyAccountWallet,
   ].includes(wallet?.type);
   const isETH =
     wallet?.type === KeyringWalletType.SingleAccountWallet &&

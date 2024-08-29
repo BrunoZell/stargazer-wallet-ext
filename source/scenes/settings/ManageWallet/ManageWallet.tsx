@@ -18,6 +18,7 @@ import {
 } from 'constants/index';
 import styles from './ManageWallet.scss';
 import IManageWalletSettings from './types';
+import { KeyringWalletTypeExt } from 'polyfill/KeyringWalletTypeExt';
 
 const ManageWallet: FC<IManageWalletSettings> = ({
   handleSubmit,
@@ -42,6 +43,7 @@ const ManageWallet: FC<IManageWalletSettings> = ({
   const isHardwareWallet = [
     KeyringWalletType.BitfiAccountWallet,
     KeyringWalletType.LedgerAccountWallet,
+    KeyringWalletTypeExt.YubikeyAccountWallet,
   ].includes(wallet.type);
 
   useEffect(() => {

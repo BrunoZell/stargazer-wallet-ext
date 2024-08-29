@@ -16,6 +16,7 @@ import {
 import styles from './Confirm.scss';
 import { ellipsis } from '../../helpers';
 import { convertBigNumber } from 'utils/number';
+import { KeyringWalletTypeExt } from 'polyfill/KeyringWalletTypeExt';
 
 interface ISendConfirm {
   isExternalRequest: boolean;
@@ -158,7 +159,8 @@ const SendConfirm = ({
             disabled={disabled}
           >
             {activeWallet.type === KeyringWalletType.LedgerAccountWallet ||
-            activeWallet.type === KeyringWalletType.BitfiAccountWallet
+            activeWallet.type === KeyringWalletType.BitfiAccountWallet ||
+            activeWallet.type === KeyringWalletTypeExt.YubikeyAccountWallet
               ? 'Next'
               : 'Confirm'}
           </Button>
