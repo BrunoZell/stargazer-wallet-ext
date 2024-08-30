@@ -282,7 +282,7 @@ const YubikeyPage = () => {
         const { deviceId, publicKey, amount, from, to, fee } = queryString.parse(location.search) as any;
 
         try {
-            setWaitingForYubikey(true);
+            // setWaitingForYubikey(true);
 
             const { hash, signedTransaction } = await YubikeyBridgeUtil.generateSignedTransactionWithHashV2(publicKey, deviceId, from, to, Number(amount), Number(fee));
             console.log('tx hash generated and signed: ', hash);
@@ -295,7 +295,7 @@ const YubikeyPage = () => {
             //     StargazerWSMessageBroker.sendResponseResult(hash, requestMessage);
             // }
 
-            setWaitingForYubikey(false);
+            // setWaitingForYubikey(false);
             setTransactionSigned(true);
         } catch (error: any) {
             showAlert(error.message || error.toString());
