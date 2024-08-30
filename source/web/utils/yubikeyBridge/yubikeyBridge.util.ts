@@ -57,11 +57,11 @@ class YubikeyBridgeUtil {
     return this.sendNativeMessage(ipcMessage);
   }
 
-  static async signHashOnYubikey(publicKey: string, keyId: string, hash: string) {
+  static async signHashOnYubikey(publicKey: string, fingerprint: string, hash: string) {
     const ipcMessage = {
       command: 'signHash',
       publicKey,
-      keyId,
+      fingerprint,
       hash,
     };
 
