@@ -78,21 +78,19 @@ class YubikeyBridgeUtil {
     }
 
     const lastRef = await dag4.network.getAddressLastAcceptedTransactionRef(fromAddress);
-    const { tx, hash: txHash } = dag4.keyStore.prepareTx(amount, toAddress, fromAddress, lastRef, fee, '2.0');
+    const { tx, hash } = dag4.keyStore.prepareTx(amount, toAddress, fromAddress, lastRef, fee, '2.0');
 
-    console.log('prepared transaction:',);
+    console.log('prepared transaction:');
     console.log(tx);
 
     // Sign on Yubikey
-    const signature = await this.signHashOnYubikey(fromPublicKey, gpgFingerprint, txHash);
+    const signature = await this.signHashOnYubikey(fromPublicKey, gpgFingerprint, hash);
 
+    // Create a public key with 04 prefix
     const uncompressedPublicKey = fromPublicKey.length === 128 ? '04' + fromPublicKey : fromPublicKey;
 
-    // const success = dag4.keyStore.verify(uncompressedPublicKey, txHash, signature);
-
-    // if (!success) {
-    //   throw new Error('Sign-Verify failed');
-    // }
+    const success = dag4.keyStore.verify(uncompressedPublicKey, hash, signature);
+    console.log('dag4.keyStore signature verification:', success);
 
     const signatureElt: any = {};
     signatureElt.id = uncompressedPublicKey.substring(2); //Remove 04 prefix
@@ -102,7 +100,7 @@ class YubikeyBridgeUtil {
     transaction.addSignature(signatureElt);
 
     return {
-      hash: txHash,
+      hash,
       signedTransaction: transaction.getPostTransaction() as PostTransactionV2
     };
   }
