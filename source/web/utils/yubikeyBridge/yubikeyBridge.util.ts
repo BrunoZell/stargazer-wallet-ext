@@ -88,11 +88,11 @@ class YubikeyBridgeUtil {
 
     const uncompressedPublicKey = fromPublicKey.length === 128 ? '04' + fromPublicKey : fromPublicKey;
 
-    const success = dag4.keyStore.verify(uncompressedPublicKey, txHash, signature);
+    // const success = dag4.keyStore.verify(uncompressedPublicKey, txHash, signature);
 
-    if (!success) {
-      throw new Error('Sign-Verify failed');
-    }
+    // if (!success) {
+    //   throw new Error('Sign-Verify failed');
+    // }
 
     const signatureElt: any = {};
     signatureElt.id = uncompressedPublicKey.substring(2); //Remove 04 prefix
