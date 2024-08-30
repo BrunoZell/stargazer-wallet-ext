@@ -33,7 +33,7 @@ import MessageSigning from './views/messageSigning';
 
 import 'assets/styles/global.scss';
 import { Color } from '@material-ui/lab/Alert';
-// import { dag4 } from '@stardust-collective/dag4';
+import { dag4 } from '@stardust-collective/dag4';
 // import { StargazerExternalPopups, StargazerWSMessageBroker } from 'scripts/Background/messaging';
 
 /////////////////////////
@@ -285,12 +285,11 @@ const YubikeyPage = () => {
             setWaitingForYubikey(true);
 
             const { hash, signedTransaction } = await YubikeyBridgeUtil.generateSignedTransactionWithHashV2(publicKey, deviceId, from, to, Number(amount), Number(fee));
-            console.log('tx hash generated: ', hash);
+            console.log('tx hash generated and signed: ', hash);
             console.log(signedTransaction);
 
-
-            // const hashSent = await dag4.account.networkInstance.postTransaction(signedTransaction);
-            // console.log('tx hash sent: ', hashSent);
+            const hashSent = await dag4.account.networkInstance.postTransaction(signedTransaction);
+            console.log('tx hash sent: ', hashSent);
 
             // if (hashSent) {
             //     StargazerWSMessageBroker.sendResponseResult(hash, requestMessage);
