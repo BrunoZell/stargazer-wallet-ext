@@ -2,6 +2,7 @@ import { dag4 } from '@stardust-collective/dag4';
 import { DAG_NETWORK } from 'constants/index';
 import store from 'state/store';
 import { TransactionV2, PostTransactionV2 } from "@stardust-collective/dag4-keystore";
+import * as jsSha512 from "js-sha512";
 
 class YubikeyBridgeUtil {
 
@@ -62,7 +63,7 @@ class YubikeyBridgeUtil {
       command: 'signHash',
       publicKey,
       fingerprint,
-      hash,
+      hash: jsSha512.sha512(hash),
     };
 
     const response = await this.sendNativeMessage(ipcMessage);
@@ -77,17 +78,17 @@ class YubikeyBridgeUtil {
     }
 
     const lastRef = await dag4.network.getAddressLastAcceptedTransactionRef(fromAddress);
-    const { tx, hash } = dag4.keyStore.prepareTx(amount, toAddress, fromAddress, lastRef, fee, '2.0');
+    const { tx, hash: txHash } = dag4.keyStore.prepareTx(amount, toAddress, fromAddress, lastRef, fee, '2.0');
 
     console.log('prepared transaction:',);
     console.log(tx);
 
     // Sign on Yubikey
-    const signature = await this.signHashOnYubikey(fromPublicKey, gpgFingerprint, hash);
+    const signature = await this.signHashOnYubikey(fromPublicKey, gpgFingerprint, txHash);
 
     const uncompressedPublicKey = fromPublicKey.length === 128 ? '04' + fromPublicKey : fromPublicKey;
 
-    const success = dag4.keyStore.verify(uncompressedPublicKey, hash, signature);
+    const success = dag4.keyStore.verify(uncompressedPublicKey, txHash, signature);
 
     if (!success) {
       throw new Error('Sign-Verify failed');
@@ -101,7 +102,7 @@ class YubikeyBridgeUtil {
     transaction.addSignature(signatureElt);
 
     return {
-      hash,
+      hash: txHash,
       signedTransaction: transaction.getPostTransaction() as PostTransactionV2
     };
   }
