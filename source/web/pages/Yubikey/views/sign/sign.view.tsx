@@ -72,7 +72,7 @@ const SignView = ({
     <>
       <div className={styles.wrapper}>
         <section className={styles.subheading}>
-          Yubikey {deviceId} - Sign Transaction
+          Yubikey {deviceId.slice(-16)} - Sign Transaction
         </section>
         <section className={styles.txAmount}>
           <div className={styles.iconWrapper}>

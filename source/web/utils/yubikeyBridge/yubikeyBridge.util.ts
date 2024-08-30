@@ -71,7 +71,7 @@ class YubikeyBridgeUtil {
   }
 
   // Copied from node_modules\@stardust-collective\dag4-keystore\src\key-store.ts
-  static async generateSignedTransactionWithHashV2(fromPublicKey: string, fromAddress: string, toAddress: string, amount: number, fee = 0) {
+  static async generateSignedTransactionWithHashV2(fromPublicKey: string, gpgFingerprint: string, fromAddress: string, toAddress: string, amount: number, fee = 0) {
     if (!fromPublicKey) {
       throw new Error('No public key set');
     }
@@ -82,16 +82,8 @@ class YubikeyBridgeUtil {
     console.log('prepared transaction:',);
     console.log(tx);
 
-    // Compute the GPG key id (through the SHA256 fingerprint) of the public key.
-    // This routes the signature to the right key in the Yubikey.
-    const publicKeyBuffer = Buffer.from(fromPublicKey, 'hex');
-    const fingerprint = await crypto.subtle.digest('sha256', publicKeyBuffer);
-    const fingerprintArray = new Uint8Array(fingerprint);
-    const fingerprintHex = Array.from(fingerprintArray).map(byte => byte.toString(16).padStart(2, '0')).join('');
-    const gpgKeyId = fingerprintHex.slice(-16).toUpperCase(); // Last 16 characters in uppercase are the GPG key ID
-
     // Sign on Yubikey
-    const signature = await this.signHashOnYubikey(fromPublicKey, gpgKeyId, hash);
+    const signature = await this.signHashOnYubikey(fromPublicKey, gpgFingerprint, hash);
 
     const uncompressedPublicKey = fromPublicKey.length === 128 ? '04' + fromPublicKey : fromPublicKey;
 

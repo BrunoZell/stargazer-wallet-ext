@@ -203,17 +203,23 @@ const YubikeyPage = () => {
     const getAccountData = async () => {
         try {
             const response = await YubikeyBridgeUtil.getPublicKeyFromYubikey();
-            const publicKey = response.publicKey;
-
             if (response.error) {
                 throw new Error(response.error);
             }
+
+            const publicKey = response.publicKey;
+            const fingerprint = response.fingerprint;
 
             if (!publicKey) {
                 throw new Error('No public key found');
             }
 
+            if (!fingerprint) {
+                throw new Error('No key fingerprint found');
+            }
+
             console.log('Fetched public key: ', publicKey);
+            console.log('Fetched fingerprint: ', fingerprint);
             const address = keyStore.getDagAddressFromPublicKey(publicKey);
             console.log('Generated address: ', address);
 
@@ -229,6 +235,7 @@ const YubikeyPage = () => {
             };
 
             setAccountData(accountData);
+            setDeviceId(fingerprint); // GPG identifies keys with fingerprint. Use as deviceId so it works with all Yubikeys that hold the same key.
             setWalletState(WALLET_STATE_ENUM.VIEW_ACCOUNTS);
         } catch (error: any) {
             console.log('error', error);
@@ -272,12 +279,12 @@ const YubikeyPage = () => {
     };
 
     const onSignPress = async () => {
-        const { /*deviceId,*/ publicKey, amount, from, to, fee } = queryString.parse(location.search) as any;
+        const { deviceId, publicKey, amount, from, to, fee } = queryString.parse(location.search) as any;
 
         try {
             setWaitingForYubikey(true);
 
-            const { hash, signedTransaction } = await YubikeyBridgeUtil.generateSignedTransactionWithHashV2(publicKey, from, to, Number(amount), Number(fee));
+            const { hash, signedTransaction } = await YubikeyBridgeUtil.generateSignedTransactionWithHashV2(publicKey, deviceId, from, to, Number(amount), Number(fee));
             console.log('tx hash generated: ', hash);
             console.log(signedTransaction);
 
