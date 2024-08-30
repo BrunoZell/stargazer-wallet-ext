@@ -57,9 +57,11 @@ class YubikeyBridgeUtil {
     return this.sendNativeMessage(ipcMessage);
   }
 
-  static async signHashOnYubikey(hash: string) {
+  static async signHashOnYubikey(publicKey: string, keyId: string, hash: string) {
     const ipcMessage = {
       command: 'signHash',
+      publicKey,
+      keyId,
       hash,
     };
 
@@ -77,7 +79,19 @@ class YubikeyBridgeUtil {
     const lastRef = await dag4.network.getAddressLastAcceptedTransactionRef(fromAddress);
     const { tx, hash } = dag4.keyStore.prepareTx(amount, toAddress, fromAddress, lastRef, fee, '2.0');
 
-    const signature = await this.signHashOnYubikey(hash);
+    console.log('prepared transaction:',);
+    console.log(tx);
+
+    // Compute the GPG key id (through the SHA256 fingerprint) of the public key.
+    // This routes the signature to the right key in the Yubikey.
+    const publicKeyBuffer = Buffer.from(fromPublicKey, 'hex');
+    const fingerprint = await crypto.subtle.digest('sha256', publicKeyBuffer);
+    const fingerprintArray = new Uint8Array(fingerprint);
+    const fingerprintHex = Array.from(fingerprintArray).map(byte => byte.toString(16).padStart(2, '0')).join('');
+    const gpgKeyId = fingerprintHex.slice(-16).toUpperCase(); // Last 16 characters in uppercase are the GPG key ID
+
+    // Sign on Yubikey
+    const signature = await this.signHashOnYubikey(fromPublicKey, gpgKeyId, hash);
 
     const uncompressedPublicKey = fromPublicKey.length === 128 ? '04' + fromPublicKey : fromPublicKey;
 

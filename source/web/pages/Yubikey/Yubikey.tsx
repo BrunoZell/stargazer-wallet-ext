@@ -33,8 +33,8 @@ import MessageSigning from './views/messageSigning';
 
 import 'assets/styles/global.scss';
 import { Color } from '@material-ui/lab/Alert';
-import { dag4 } from '@stardust-collective/dag4';
-import { StargazerExternalPopups, StargazerWSMessageBroker } from 'scripts/Background/messaging';
+// import { dag4 } from '@stardust-collective/dag4';
+// import { StargazerExternalPopups, StargazerWSMessageBroker } from 'scripts/Background/messaging';
 
 /////////////////////////
 // Types
@@ -272,31 +272,22 @@ const YubikeyPage = () => {
     };
 
     const onSignPress = async () => {
-        // const { amount, from, to, fee } = queryString.parse(location.search) as any;
-
-        const { data, message: requestMessage } =
-            StargazerExternalPopups.decodeRequestMessageLocationParams<{
-                amount: string;
-                publicKey: string;
-                from: string;
-                to: string;
-                fee: string;
-            }>(location.href);
-
-        const { amount, publicKey, from, to, fee } = data;
+        const { /*deviceId,*/ publicKey, amount, from, to, fee } = queryString.parse(location.search) as any;
 
         try {
             setWaitingForYubikey(true);
 
             const { hash, signedTransaction } = await YubikeyBridgeUtil.generateSignedTransactionWithHashV2(publicKey, from, to, Number(amount), Number(fee));
-
             console.log('tx hash generated: ', hash);
-            const hashSent = await dag4.account.networkInstance.postTransaction(signedTransaction);
-            console.log('tx hash sent: ', hashSent);
+            console.log(signedTransaction);
 
-            if (hashSent) {
-                StargazerWSMessageBroker.sendResponseResult(hash, requestMessage);
-            }
+
+            // const hashSent = await dag4.account.networkInstance.postTransaction(signedTransaction);
+            // console.log('tx hash sent: ', hashSent);
+
+            // if (hashSent) {
+            //     StargazerWSMessageBroker.sendResponseResult(hash, requestMessage);
+            // }
 
             setWaitingForYubikey(false);
             setTransactionSigned(true);
@@ -310,24 +301,26 @@ const YubikeyPage = () => {
         // const jsonData = JSON.parse(data);
         // const message = jsonData.signatureRequestEncoded;
 
-        const { data, message: requestMessage } =
-            StargazerExternalPopups.decodeRequestMessageLocationParams<{
-                signatureRequestEncoded: string;
-                asset: string;
-                provider: string;
-                chainLabel: string;
-                walletLabel: string;
-                bipIndex: string;
-            }>(location.href);
+        // const { data, message: requestMessage } =
+        //     StargazerExternalPopups.decodeRequestMessageLocationParams<{
+        //         signatureRequestEncoded: string;
+        //         asset: string;
+        //         provider: string;
+        //         chainLabel: string;
+        //         walletLabel: string;
+        //         bipIndex: string;
+        //     }>(location.href);
 
-        const message = data.signatureRequestEncoded;
+        // const message = data.signatureRequestEncoded;
 
         try {
             setWaitingForYubikey(true);
-            const signature = await YubikeyBridgeUtil.signHashOnYubikey(message);
-            console.log('signature', signature);
+            // const publicKey = null;
+            // const keyId = null;
+            // const signature = await YubikeyBridgeUtil.signHashOnYubikey(publicKey, keyId, hash);
+            // console.log('signature', signature);
 
-            StargazerWSMessageBroker.sendResponseResult(signature, requestMessage);
+            // StargazerWSMessageBroker.sendResponseResult(signature, requestMessage);
 
             setWaitingForYubikey(false);
             setTransactionSigned(true);
