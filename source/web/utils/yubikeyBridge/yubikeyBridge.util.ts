@@ -111,7 +111,7 @@ class YubikeyBridgeUtil {
     }
 
     console.log(
-      'dag4.keyStore signature verification:',
+      'Signature verification:',
       '\n"From" public key:', uncompressedPublicKey,
       '\nSignature public key:', signatureResponse.publicKey,
       '\nSignature public key inferred address:', signatureAddress,
@@ -119,7 +119,7 @@ class YubikeyBridgeUtil {
       '\nSigned digest:', signatureResponse.digestSigned,
       '\nSignature raw:', signatureResponse.signatureRaw,
       '\nSignature ASN.1 DER:', signatureResponse.signatureAsnDer,
-      '\nVerification Result:', success
+      '\ndag4.keyStore.verify result:', success
     );
 
     const signatureElt: any = {};
