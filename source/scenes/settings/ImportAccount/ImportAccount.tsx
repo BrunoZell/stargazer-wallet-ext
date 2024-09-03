@@ -15,7 +15,7 @@ import FileSelect from 'components/FileSelect';
 
 // import LedgerIcon from 'assets/images/svg/ledger.svg';
 import BitfiIcon from 'assets/images/svg/bitfi.svg';
-import YubikeyIcon from 'assets/images/svg/yubikey.svg';
+import YubikeyIcon from 'assets/images/yubikey_logo.png';
 import styles from './ImportAccount.scss';
 import { useAlert } from 'react-alert';
 
@@ -229,7 +229,7 @@ const ImportAccount: FC<IImportAccountSettings> = ({
                             : null,
                         ])}
                       >
-                        <img src={`/${YubikeyIcon}`} alt="yubikey_icon" /> {/* Add Yubikey icon */}
+                        <img src={`/${YubikeyIcon}`} alt="yubikey_icon" width="70" height="70" /> {/* Add Yubikey icon */}
                       </div>
                     </div>
                   </>
