@@ -69,9 +69,10 @@ class YubikeyBridgeUtil {
     const response = await this.sendNativeMessage(ipcMessage);
 
     return {
-      signatureAsnDer: response.signatureAsnDer,
-      rawSignature: response.rawSignature,
       publicKey: response.publicKey,
+      digestSigned: response.digestSigned,
+      signatureAsnDer: response.signatureAsnDer,
+      signatureRaw: response.signatureRaw,
     };
   }
 
@@ -105,11 +106,16 @@ class YubikeyBridgeUtil {
       console.log(`Signature address ${signatureAddress} does not match from address ${fromAddress}`);
     }
 
+    if (signatureResponse.digestSigned != dag4.keyStore.sha512(hash)) {
+      console.log(`Signed digest ${signatureResponse.digestSigned} does match SHA512(TxHash) ${dag4.keyStore.sha512(hash)}`);
+    }
+
     console.log(
       'dag4.keyStore signature verification:',
       '\nPublic Key:', uncompressedPublicKey,
-      '\nHash:', hash,
-      '\nSignature raw0:', signatureResponse.rawSignature,
+      '\nTx Hash:', hash,
+      '\nSigned digest:', signatureResponse.digestSigned,
+      '\nSignature raw:', signatureResponse.signatureRaw,
       '\nSignature ASN.1 DER:', signatureResponse.signatureAsnDer,
       '\nVerification Result:', success
     );
