@@ -84,7 +84,7 @@ class YubikeyBridgeUtil {
     const lastRef = await dag4.network.getAddressLastAcceptedTransactionRef(fromAddress);
     const { tx, hash } = dag4.keyStore.prepareTx(amount, toAddress, fromAddress, lastRef, fee, '2.0');
 
-    console.log('prepared transaction:');
+    console.log('prepared transaction with hash: ', hash);
     console.log(tx);
 
     // Create a public key with 04 prefix
@@ -94,12 +94,23 @@ class YubikeyBridgeUtil {
     const signatureResponse = await this.signHashOnYubikey(uncompressedPublicKey, hash, yubikeyPin);
 
     const success = dag4.keyStore.verify(uncompressedPublicKey, hash, signatureResponse.signatureAsnDer);
-    
+
+    if (signatureResponse.publicKey != uncompressedPublicKey) {
+      console.log(`Signature public key ${signatureResponse.publicKey} does not match "from" public key ${uncompressedPublicKey}`);
+    }
+
+    const signatureAddress = dag4.keyStore.getDagAddressFromPublicKey(signatureResponse.publicKey);
+
+    if (signatureAddress != fromAddress) {
+      console.log(`Signature address ${signatureAddress} does not match from address ${fromAddress}`);
+    }
+
     console.log(
       'dag4.keyStore signature verification:',
       '\nPublic Key:', uncompressedPublicKey,
       '\nHash:', hash,
-      '\nSignature:', signatureResponse.signatureAsnDer,
+      '\nSignature raw0:', signatureResponse.rawSignature,
+      '\nSignature ASN.1 DER:', signatureResponse.signatureAsnDer,
       '\nVerification Result:', success
     );
 
