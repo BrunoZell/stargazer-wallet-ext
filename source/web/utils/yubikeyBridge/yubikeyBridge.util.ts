@@ -112,7 +112,9 @@ class YubikeyBridgeUtil {
 
     console.log(
       'dag4.keyStore signature verification:',
-      '\nPublic Key:', uncompressedPublicKey,
+      '\n"From" public key:', uncompressedPublicKey,
+      '\nSignature public key:', signatureResponse.publicKey,
+      '\nSignature public key inferred address:', signatureAddress,
       '\nTx Hash:', hash,
       '\nSigned digest:', signatureResponse.digestSigned,
       '\nSignature raw:', signatureResponse.signatureRaw,
