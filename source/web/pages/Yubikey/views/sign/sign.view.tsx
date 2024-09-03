@@ -2,7 +2,7 @@
 // Module Imports
 /////////////////////////
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useFiat } from 'hooks/usePrice';
 
 /////////////////////////
@@ -13,6 +13,7 @@ import Button from 'components/Button';
 import UpArrowIcon from '@material-ui/icons/ArrowUpward';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import CheckIcon from '@material-ui/icons/CheckCircle';
+import TextField from '@material-ui/core/TextField';
 
 /////////////////////////
 // Styles Imports
@@ -34,7 +35,7 @@ interface ISignViewProps {
   toAddress: string;
   waiting: boolean;
   transactionSigned: boolean;
-  onSignPress: () => {};
+  onSignPress: (pin: string) => {};
 }
 
 /////////////////////////
@@ -52,6 +53,11 @@ const SignView = ({
   onSignPress,
 }: ISignViewProps) => {
   const getFiatAmount = useFiat();
+  const [pin, setPin] = useState('');
+
+  const handlePinChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPin(e.target.value);
+  };
 
   const amountBN = convertBigNumber(amount);
   const feeBN = convertBigNumber(fee);
@@ -69,68 +75,75 @@ const SignView = ({
       </section>
     </div>
   ) : (
-    <>
-      <div className={styles.wrapper}>
-        <section className={styles.subheading}>
-          Yubikey {deviceId.slice(-16)} - Sign Transaction
-        </section>
-        <section className={styles.txAmount}>
-          <div className={styles.iconWrapper}>
-            <UpArrowIcon />
-          </div>
-          {amountBN} DAG
-          <small>
-            (≈
-            {getFiatAmount(Number(amount || 0), 8, 'constellation-labs')})
-          </small>
-        </section>
-        <section className={styles.transaction}>
-          <div className={styles.row}>
-            From
-            <span>{fromAddress}</span>
-          </div>
-          <div className={styles.row}>
-            To
-            <span>{toAddress}</span>
-          </div>
-          <div className={styles.row}>
-            Transaction Fee
-            <span>
-              {feeBN} DAG (≈ {getFiatAmount(Number(fee) || 0, 8, 'constellation-labs')})
-            </span>
-          </div>
-        </section>
-        <section className={styles.confirm}>
-          <div className={styles.row}>
-            Max Total
-            <span>
-              {getFiatAmount(
-                Number(amount || 0) + Number(fee || 0),
-                8,
-                'constellation-labs'
-              )}
-            </span>
-          </div>
-        </section>
-        <section className={styles.instruction}>
-          <span>Please connect your Yubikey device to sign the transaction.</span>
-        </section>
-        <div className={styles.actions}>
-          <Button type="submit" variant={styles.button} onClick={onSignPress}>
-            Sign
-          </Button>
+    <div className={styles.wrapper}>
+      <section className={styles.subheading}>
+        Yubikey {deviceId.slice(-16)} - Sign Transaction
+      </section>
+      <section className={styles.txAmount}>
+        <div className={styles.iconWrapper}>
+          <UpArrowIcon />
         </div>
-        {waiting && (
-          <div className={styles.progressWrapper}>
-            <div className={styles.progress}>
-              <div>
-                <CircularProgress />
-              </div>
+        {amountBN} DAG
+        <small>
+          (≈
+          {getFiatAmount(Number(amount || 0), 8, 'constellation-labs')})
+        </small>
+      </section>
+      <section className={styles.transaction}>
+        <div className={styles.row}>
+          From
+          <span>{fromAddress}</span>
+        </div>
+        <div className={styles.row}>
+          To
+          <span>{toAddress}</span>
+        </div>
+        <div className={styles.row}>
+          Transaction Fee
+          <span>
+            {feeBN} DAG (≈ {getFiatAmount(Number(fee) || 0, 8, 'constellation-labs')})
+          </span>
+        </div>
+      </section>
+      <section className={styles.confirm}>
+        <div className={styles.row}>
+          Max Total
+          <span>
+            {getFiatAmount(
+              Number(amount || 0) + Number(fee || 0),
+              8,
+              'constellation-labs'
+            )}
+          </span>
+        </div>
+      </section>
+      <section className={styles.instruction}>
+        <span>Please connect your Yubikey to sign the transaction.</span>
+      </section>
+      <section className={styles.instruction}>
+        <TextField
+          label="Yubikey PIN"
+          type="password"
+          onChange={handlePinChange}
+          margin="normal"
+          variant="outlined"
+        />
+      </section>
+      <div className={styles.actions}>
+        <Button type="submit" variant={styles.button} onClick={() => onSignPress(pin)}>
+          Sign
+        </Button>
+      </div>
+      {waiting && (
+        <div className={styles.progressWrapper}>
+          <div className={styles.progress}>
+            <div>
+              <CircularProgress />
             </div>
           </div>
-        )}
-      </div>
-    </>
+        </div>
+      )}
+    </div>
   );
 };
 

@@ -278,27 +278,31 @@ const YubikeyPage = () => {
         setWalletState(WALLET_STATE_ENUM.LOCKED);
     };
 
-    const onSignPress = async () => {
+    const onSignPress = async (pin: string) => {
         const { /*deviceId,*/ publicKey, amount, from, to, fee } = queryString.parse(location.search) as any;
         // deviceId is the GPG fingerprint of the key to be used for signing. But the APDU Yubikey Bridge does not use it.
         // Instead, it reads out the public key during signing and it is compared after the signature is returned.
 
         try {
-            // setWaitingForYubikey(true);
+            setWaitingForYubikey(true);
 
-            const yubikeyPin = '123456';
+            const yubikeyPin = pin as string;
             const { hash, signedTransaction } = await YubikeyBridgeUtil.generateSignedTransactionWithHashV2(publicKey.toLowerCase(), yubikeyPin, from, to, Number(amount), Number(fee));
             console.log('signed transaction with hash: ', hash);
             console.log(signedTransaction);
 
-            const hashSent = await dag4.account.networkInstance.postTransaction(signedTransaction);
-            console.log('tx hash sent: ', hashSent);
+            try {
+                const hashSent = await dag4.account.networkInstance.postTransaction(signedTransaction);
+                console.log('tx hash sent: ', hashSent);
+            } catch (error) {
+                console.error('error during transaction posting', error);
+            }
 
             // if (hashSent) {
             //     StargazerWSMessageBroker.sendResponseResult(hash, requestMessage);
             // }
 
-            // setWaitingForYubikey(false);
+            setWaitingForYubikey(false);
             setTransactionSigned(true);
         } catch (error: any) {
             showAlert(error.message || error.toString());
