@@ -58,21 +58,25 @@ class YubikeyBridgeUtil {
     return this.sendNativeMessage(ipcMessage);
   }
 
-  static async signHashOnYubikey(publicKey: string, fingerprint: string, hash: string) {
+  static async signHashOnYubikey(expectedUncompressedPublicKey: string, txHash: string, yubikeyPin: string) {
     const ipcMessage = {
       command: 'signHash',
-      publicKey,
-      fingerprint,
-      hash: jsSha512.sha512(hash),
+      expectedUncompressedPublicKey: expectedUncompressedPublicKey,
+      sha512DigestToSign: jsSha512.sha512(txHash),
+      yubikeyPin: yubikeyPin,
     };
 
     const response = await this.sendNativeMessage(ipcMessage);
 
-    return response.signature;
+    return {
+      signatureAsnDer: response.signatureAsnDer,
+      rawSignature: response.rawSignature,
+      publicKey: response.publicKey,
+    };
   }
 
   // Copied from node_modules\@stardust-collective\dag4-keystore\src\key-store.ts
-  static async generateSignedTransactionWithHashV2(fromPublicKey: string, gpgFingerprint: string, fromAddress: string, toAddress: string, amount: number, fee = 0) {
+  static async generateSignedTransactionWithHashV2(fromPublicKey: string, yubikeyPin: string, fromAddress: string, toAddress: string, amount: number, fee = 0) {
     if (!fromPublicKey) {
       throw new Error('No public key set');
     }
@@ -83,18 +87,25 @@ class YubikeyBridgeUtil {
     console.log('prepared transaction:');
     console.log(tx);
 
-    // Sign on Yubikey
-    const signature = await this.signHashOnYubikey(fromPublicKey, gpgFingerprint, hash);
-
     // Create a public key with 04 prefix
     const uncompressedPublicKey = fromPublicKey.length === 128 ? '04' + fromPublicKey : fromPublicKey;
 
-    const success = dag4.keyStore.verify(uncompressedPublicKey, hash, signature);
-    console.log('dag4.keyStore signature verification:', success);
+    // Sign on Yubikey
+    const signatureResponse = await this.signHashOnYubikey(uncompressedPublicKey, hash, yubikeyPin);
+
+    const success = dag4.keyStore.verify(uncompressedPublicKey, hash, signatureResponse.signatureAsnDer);
+    
+    console.log(
+      'dag4.keyStore signature verification:',
+      '\nPublic Key:', uncompressedPublicKey,
+      '\nHash:', hash,
+      '\nSignature:', signatureResponse.signatureAsnDer,
+      '\nVerification Result:', success
+    );
 
     const signatureElt: any = {};
     signatureElt.id = uncompressedPublicKey.substring(2); //Remove 04 prefix
-    signatureElt.signature = signature;
+    signatureElt.signature = signatureResponse.signatureAsnDer;
 
     const transaction = TransactionV2.fromPostTransaction(tx as PostTransactionV2);
     transaction.addSignature(signatureElt);

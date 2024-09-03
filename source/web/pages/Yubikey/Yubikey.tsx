@@ -284,7 +284,8 @@ const YubikeyPage = () => {
         try {
             // setWaitingForYubikey(true);
 
-            const { hash, signedTransaction } = await YubikeyBridgeUtil.generateSignedTransactionWithHashV2(publicKey.toLowerCase(), deviceId, from, to, Number(amount), Number(fee));
+            const yubikeyPin = '123456';
+            const { hash, signedTransaction } = await YubikeyBridgeUtil.generateSignedTransactionWithHashV2(publicKey.toLowerCase(), yubikeyPin, from, to, Number(amount), Number(fee));
             console.log('tx hash generated and signed: ', hash);
             console.log(signedTransaction);
 
