@@ -120,12 +120,12 @@ const SignView = ({
       <section className={styles.instruction}>
         <span>Please connect your Yubikey to sign the transaction.</span>
       </section>
-      <section className={styles.instruction}>
+      <section className={styles.pin}>
         <TextField
           label="Yubikey PIN"
           type="password"
           onChange={handlePinChange}
-          margin="normal"
+          margin="dense"
           variant="outlined"
         />
       </section>

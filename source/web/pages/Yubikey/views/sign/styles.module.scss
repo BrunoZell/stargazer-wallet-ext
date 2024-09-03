@@ -139,6 +139,13 @@
     font-size: 13px;
   }
 
+  section.pin {
+    background: $white;
+    padding: 1px;
+    text-align: center;
+    font-size: 13px;
+  }
+
   .row {
     display: flex;
     flex-direction: column;

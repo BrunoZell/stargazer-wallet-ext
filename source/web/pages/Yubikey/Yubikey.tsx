@@ -106,7 +106,7 @@ const useStyles = makeStyles({
         display: 'flex',
         flexDirection: 'column',
         width: 380,
-        height: 570,
+        height: 628,
         backgroundColor: '#ffffff',
         borderRadius: 6,
     },
